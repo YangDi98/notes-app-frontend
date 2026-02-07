@@ -54,6 +54,17 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function refreshToken() {
+    try {
+      const response = await authAPI.refreshAccessToken()
+      accessToken.value = response.data.accessToken
+      return response.data.accessToken
+    } catch (error) {
+      console.error('Failed to refresh token:', error)
+      throw error
+    }
+  }
+
   async function fetchCurrentUser() {
     console.log(accessToken.value)
     if (!accessToken.value) {
@@ -96,5 +107,6 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     fetchCurrentUser,
     isAuthenticated,
+    refreshToken,
   }
 })
