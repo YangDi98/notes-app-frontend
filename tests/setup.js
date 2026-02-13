@@ -5,7 +5,7 @@ import * as directives from 'vuetify/directives'
 import { createRouter, createWebHistory } from 'vue-router'
 
 // Mock ResizeObserver for tests
-global.ResizeObserver = class ResizeObserver {
+globalThis.ResizeObserver = class ResizeObserver {
   constructor(callback) {
     this.callback = callback
   }

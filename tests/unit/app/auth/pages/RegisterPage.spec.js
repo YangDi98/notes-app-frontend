@@ -4,7 +4,7 @@ import { createTestingPinia } from '@pinia/testing'
 import { nextTick } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useNotificationStore } from '@/stores/notification'
-import { apiClient } from '@/api/auth'
+import { apiClient } from '@/api/api'
 import AxiosMockAdapter from 'axios-mock-adapter'
 
 const mockAxios = new AxiosMockAdapter(apiClient)

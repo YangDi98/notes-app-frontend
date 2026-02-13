@@ -17,6 +17,27 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_NOTES_BACKEND_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
+          cookieDomainRewrite: 'localhost',
+          cookiePathRewrite: '/',
+          onProxyReq: (proxyReq, req) => {
+            // Forward cookies from browser to backend
+            if (req.headers.cookie) {
+              console.log('Forwarding cookies to backend:', req.headers.cookie)
+              proxyReq.setHeader('Cookie', req.headers.cookie)
+            }
+          },
+          onProxyRes: (proxyRes) => {
+            // Forward cookies from backend to browser
+            if (proxyRes.headers['set-cookie']) {
+              console.log('Forwarding cookies to browser:', proxyRes.headers['set-cookie'])
+              const cookies = proxyRes.headers['set-cookie'].map(cookie => {
+                // Rewrite domain and path for localhost
+                return cookie.replace(/Domain=[^;]+/i, 'Domain=localhost')
+                           .replace(/Path=[^;]+/i, 'Path=/')
+              })
+              proxyRes.headers['set-cookie'] = cookies
+            }
+          }
         },
       },
     },
@@ -38,6 +59,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
+        '@tests': fileURLToPath(new URL('./tests', import.meta.url)),
       },
     },
   }

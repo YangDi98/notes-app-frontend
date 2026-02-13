@@ -1,11 +1,9 @@
 import { useStorage } from '@vueuse/core'
 import { useAuthStore } from '@/stores/auth'
 
-
 export function setupRouterGuards(router) {
   // Navigation guard to protect authenticated routes
   router.beforeEach(async (to, from, next) => {
-
     const authStore = useAuthStore()
     const accessToken = useStorage('accessToken', null)
     const requiresAuth = to.meta?.requiresAuth !== false // Default to true unless explicitly set to false
@@ -22,7 +20,7 @@ export function setupRouterGuards(router) {
     if (accessToken.value && !authStore.user) {
       try {
         await authStore.fetchCurrentUser()
-      } catch  {
+      } catch {
         // If fetching fails, token is invalid - redirect to login
         return next({
           name: 'login',

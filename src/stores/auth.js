@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import * as authAPI from '@/api/auth.js'
+import * as authAPI from '@/api/api.js'
 import { useNotificationStore } from '@/stores/notification'
 import { useStorage } from '@vueuse/core'
 
@@ -47,7 +47,6 @@ export const useAuthStore = defineStore('auth', () => {
         message: error.response?.data?.message || 'Login failed.',
         type: 'failure',
       })
-      console.log(error)
       throw error
     } finally {
       pending.value.login = false
@@ -66,7 +65,6 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function fetchCurrentUser() {
-    console.log(accessToken.value)
     if (!accessToken.value) {
       throw new Error('No access token available')
     }
@@ -74,7 +72,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       pending.value.fetchCurrentUser = true
       const response = await authAPI.fetchCurrentUser()
-      user.value = response.data;
+      user.value = response.data
       return user.value
     } catch (error) {
       // If token is invalid, clear it

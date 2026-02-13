@@ -1,5 +1,3 @@
-
-
 const authRoutes = [
   {
     path: '/register',
