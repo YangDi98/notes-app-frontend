@@ -20,7 +20,8 @@ apiClient.interceptors.request.use(
     }
 
     // Add authorization header if access token is available
-    if (accessToken.value) {
+    // Skip auth header for refresh requests
+    if (accessToken.value && !config.skipAuth) {
       config.headers.Authorization = `Bearer ${accessToken.value}`
     }
 
@@ -98,5 +99,26 @@ export async function fetchCurrentUser() {
 }
 
 export async function refreshAccessToken() {
-  return await apiClient.post(`${baseURL}/auth/refresh`)
+  return await apiClient.post(
+    `${baseURL}/auth/refresh`,
+    {},
+    {
+      skipAuth: true,
+    },
+  )
+}
+
+export async function fetchNotes({ userId, title, startDate, endDate, limit, next }) {
+  const url = `${baseURL}/users/${userId}/notes/`
+  if (next) {
+    return await apiClient.get(`${baseURL}${next}`)
+  }
+  return await apiClient.get(url, {
+    params: {
+      title,
+      startDate,
+      endDate,
+      limit,
+    },
+  })
 }

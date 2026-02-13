@@ -22,9 +22,9 @@ async function login() {
     })
 
     // Check if there's a redirect parameter
-    const redirectTo = router.currentRoute.value.query.redirect || {name: 'notes'}
+    const redirectTo = router.currentRoute.value.query.redirect || { name: 'notes' }
     router.push(redirectTo)
-  } catch(e) {
+  } catch (e) {
     // Error notifications already handled in auth store
     // Just stay on current page
     console.log(e)
@@ -45,7 +45,9 @@ async function login() {
         required
       >
       </v-text-field>
-      <div class="d-flex justify-center"><v-btn type="submit" color="primary" :loading="authStore.pending.login">Login</v-btn></div>
+      <div class="d-flex justify-center">
+        <v-btn type="submit" color="primary" :loading="authStore.pending.login">Login</v-btn>
+      </div>
     </v-form>
 
     <div>Don't have an account? <router-link to="/register">Register</router-link></div>

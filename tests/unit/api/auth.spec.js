@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest'
 import MockAdapter from 'axios-mock-adapter'
-import * as authModule from '@/api/auth'
+import * as authModule from '@/api/api'
 
 // Create mock objects that will be shared
 const mockAccessToken = vi.hoisted(() => ({ value: null }))
@@ -27,7 +27,7 @@ vi.mock('@/router/index.js', () => ({
 let apiClient, register, login, fetchCurrentUser, refreshAccessToken
 
 beforeAll(async () => {
-  // const authModule = await import('@/api/auth')
+  // const authModule = await import('@/api/api')
   apiClient = authModule.apiClient
   register = authModule.register
   login = authModule.login

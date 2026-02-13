@@ -4,27 +4,32 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useAuthStore } from '@/stores/auth'
 import { useNotificationStore } from '@/stores/notification'
-import { apiClient } from '@/api/auth'
+import { apiClient } from '@/api/api'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { camelizeKeys } from 'humps'
+import { vi } from 'vitest'
 
 // Mock the router
-const mockPush = vi.fn()
-vi.mock('vue-router', () => ({
-  useRouter: () => ({
-    push: mockPush,
-    currentRoute: {
+const mockPush = vi.hoisted(() => vi.fn())
+vi.mock(import("vue-router"), async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    useRouter: () => ({
+      push: mockPush,
+      currentRoute: {
       value: {
         query: {
           redirect: null
         }
       }
     }
-  }),
-}))
+    })
+  }
+})
 const mockAccessToken = ref(null);
-vi.doMock('@vueuse/core', () => {
-  const actual = vi.importActual('@vueuse/core')
+vi.doMock('@vueuse/core', async () => {
+  const actual = await vi.importActual('@vueuse/core')
   return {
     ...actual,
   useStorage: vi.fn(() => mockAccessToken),

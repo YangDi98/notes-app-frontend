@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { setupRouterGuards } from '@/router/router-lifecycle.js'
 import { useAuthStore } from '@/stores/auth'
-import { apiClient } from '@/api/auth'
+import { apiClient } from '@/api/api'
 import AxiosMockAdapter from 'axios-mock-adapter'
 
 const mockAccessToken = vi.hoisted(() => ({value: null}));
