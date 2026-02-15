@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useNotesStore } from '@/stores/notes'
 import { useNotificationStore } from '@/stores/notification'
@@ -28,7 +28,12 @@ async function fetchNotes({ done } = { done: () => {} }) {
 }
 
 onMounted(() => {
+  notesStore.clearNotes()
   fetchNotes()
+})
+
+onUnmounted(() => {
+  notesStore.clearNotes()
 })
 </script>
 <template>

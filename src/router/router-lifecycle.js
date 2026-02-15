@@ -19,9 +19,23 @@ export function setupRouterGuards(router) {
     // If user has token but no user data, try to fetch it first
     if (accessToken.value && !authStore.user) {
       try {
+        // Add a small delay to ensure interceptors are ready
+        // if (from.name === undefined) {
+        //   // This is initial page load, give app time to initialize
+        //   await new Promise(resolve => setTimeout(resolve, 100))
+        // }
+        console.log(
+          'Fetching current user during navigation...',
+          from.name,
+          from.fullPath,
+          '->',
+          to.fullPath,
+        )
+
         await authStore.fetchCurrentUser()
-      } catch {
-        // If fetching fails, token is invalid - redirect to login
+      } catch (error) {
+        // If fetching fails, token might be invalid - redirect to login
+        console.log('Failed to fetch current user during navigation:', error)
         return next({
           name: 'login',
           query: { redirect: to.fullPath },

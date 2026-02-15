@@ -20,10 +20,16 @@ export const useNotesStore = defineStore('notes', () => {
     }
   }
 
+  async function clearNotes() {
+    notes.value = []
+    notesNextUrl.value = null
+  }
+
   return {
     notes,
     pending,
     fetchNotes,
     notesNextUrl,
+    clearNotes,
   }
 })
