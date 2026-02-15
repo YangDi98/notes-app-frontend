@@ -12,6 +12,9 @@ export const apiClient = axios.create({})
 // Create reactive access token storage
 const accessToken = useStorage('accessToken', null)
 
+// Track if a refresh is already in progress
+let refreshPromise = null
+
 // Add request interceptor to convert camelCase to snake_case and add auth header
 apiClient.interceptors.request.use(
   (config) => {
@@ -48,8 +51,11 @@ apiClient.interceptors.response.use(
 
     // Handle authentication errors globally
     if (error.response?.status === 401) {
+      console.log('401 error detected, attempting token refresh for:', error.config.url)
+
       // Don't try to refresh if this was already a refresh request to avoid infinite loops
       if (error.config.url?.includes('/auth/refresh')) {
+        console.log('Refresh request failed, clearing token and redirecting to login')
         // Clear stored token and redirect to login
         accessToken.value = null
         router.push('/login')
@@ -57,17 +63,34 @@ apiClient.interceptors.response.use(
       }
 
       try {
-        // Attempt to refresh the access token
-        const refreshResponse = await refreshAccessToken()
+        // If a refresh is already in progress, wait for it
+        if (refreshPromise) {
+          console.log('Waiting for existing refresh promise...')
+          await refreshPromise
+          console.log('Existing refresh completed, using updated token')
+          // After waiting, the token should be updated, no need to do anything else
+        } else {
+          console.log('Starting new token refresh...')
+          // Start a new refresh
+          refreshPromise = refreshAccessToken()
+          const refreshResponse = await refreshPromise
+          console.log('Token refresh successful')
 
-        // Update the stored access token
-        accessToken.value = refreshResponse.data.accessToken
+          // Update the stored access token
+          accessToken.value = refreshResponse.data.accessToken
+        }
 
-        // Retry the original request with the new token
-        error.config.headers.Authorization = `Bearer ${refreshResponse.data.accessToken}`
+        // Clear the refresh promise
+        refreshPromise = null
+
+        console.log('Retrying original request with refreshed token')
+        // Retry the original request with the current (refreshed) token
+        error.config.headers.Authorization = `Bearer ${accessToken.value}`
         return apiClient.request(error.config)
-      } catch {
+      } catch (refreshError) {
+        console.log('Token refresh failed:', refreshError)
         // Refresh failed, clear stored token and redirect to login
+        refreshPromise = null
         accessToken.value = null
         router.push('/login')
         return Promise.reject(error)
@@ -99,11 +122,23 @@ export async function fetchCurrentUser() {
 }
 
 export async function refreshAccessToken() {
+  // Extract CSRF token from cookie
+  const csrfToken = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith('csrf_refresh_token='))
+    ?.split('=')[1]
+
+  const headers = {}
+  if (csrfToken) {
+    headers['X-CSRF-TOKEN'] = csrfToken
+  }
+
   return await apiClient.post(
     `${baseURL}/auth/refresh`,
     {},
     {
       skipAuth: true,
+      headers,
     },
   )
 }
