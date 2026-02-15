@@ -7,6 +7,7 @@ export const useNotesStore = defineStore('notes', () => {
   const notesNextUrl = ref(null)
   const pending = ref({
     fetchNotes: false,
+    createNote: false,
   })
 
   async function fetchNotes({ userId, title, startDate, endDate, limit, next }) {
@@ -25,11 +26,23 @@ export const useNotesStore = defineStore('notes', () => {
     notesNextUrl.value = null
   }
 
+  async function createNote({ userId, title, content, categoryId }) {
+    try {
+      pending.value.createNote = true
+      const response = await api.createNote({ userId, title, content, categoryId })
+      // Prepend the new note to the list
+      notes.value = [response.data, ...notes.value]
+    } finally {
+      pending.value.createNote = false
+    }
+  }
+
   return {
     notes,
     pending,
     fetchNotes,
     notesNextUrl,
     clearNotes,
+    createNote,
   }
 })

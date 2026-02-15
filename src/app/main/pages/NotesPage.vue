@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useNotesStore } from '@/stores/notes'
 import { useNotificationStore } from '@/stores/notification'
@@ -7,6 +7,19 @@ import NoteCard from '@/components/NoteCard.vue'
 const authStore = useAuthStore()
 const notesStore = useNotesStore()
 const notificationStore = useNotificationStore()
+
+const newNote = ref({
+  title: '',
+  content: '',
+})
+
+const formValid = ref(false)
+
+const rules = {
+  title: [(value) => !!(value && value.trim()) || 'Title is required'],
+}
+
+const form = ref()
 
 async function fetchNotes({ done } = { done: () => {} }) {
   if (!authStore.user) return
@@ -27,6 +40,31 @@ async function fetchNotes({ done } = { done: () => {} }) {
   }
 }
 
+async function createNote() {
+  if (!authStore.user) return
+  try {
+    await notesStore.createNote({
+      userId: authStore.user.id,
+      title: newNote.value.title,
+      content: newNote.value.content,
+    })
+
+    newNote.value.title = ''
+    newNote.value.content = ''
+    form.value?.reset()
+
+    notificationStore.setAlertMessage({
+      message: 'Note created successfully!',
+      type: 'success',
+    })
+  } catch {
+    notificationStore.setAlertMessage({
+      message: 'Failed to create note. Please try again later.',
+      type: 'error',
+    })
+  }
+}
+
 onMounted(() => {
   notesStore.clearNotes()
   fetchNotes()
@@ -42,6 +80,38 @@ onUnmounted(() => {
       <h1>Welcome, {{ authStore.user?.firstName || 'User' }}!</h1>
       <p>This is your notes dashboard. Here you can manage all your notes.</p>
     </div>
+    <div class="pa-4">
+      <v-card class="pa-4" color="secondary" variant="outlined">
+        <v-form ref="form" v-model="formValid" validate-on="input" @submit.prevent="createNote">
+          <v-text-field
+            class="my-text-input"
+            v-model="newNote.title"
+            label="New Note Title"
+            :max-length="100"
+            :counter="100"
+            :rules="rules.title"
+            clearable
+            required
+          />
+          <v-textarea
+            class="my-textarea"
+            v-model="newNote.content"
+            label="New Note Content"
+            clearable
+          />
+          <div class="d-flex justify-end">
+            <v-btn
+              type="submit"
+              color="primary"
+              @click="createNote"
+              :loading="notesStore.pending.createNote"
+              :disabled="!formValid || notesStore.pending.createNote"
+              >Add Note</v-btn
+            >
+          </div>
+        </v-form>
+      </v-card>
+    </div>
     <v-infinite-scroll
       mode="manual"
       :items="notesStore.notes"
@@ -56,3 +126,12 @@ onUnmounted(() => {
     </v-infinite-scroll>
   </div>
 </template>
+
+<style>
+.my-text-input input {
+  color: black !important;
+}
+.my-textarea textarea {
+  color: black !important;
+}
+</style>

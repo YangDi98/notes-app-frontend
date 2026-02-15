@@ -1,4 +1,5 @@
 import NotesPage from '@/app/main/pages/NotesPage.vue'
+import { nextTick } from 'vue'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useAuthStore } from '@/stores/auth'
@@ -6,7 +7,7 @@ import { useNotificationStore } from '@/stores/notification'
 import { useNotesStore } from '@/stores/notes'
 import { apiClient } from '@/api/api'
 import AxiosMockAdapter from 'axios-mock-adapter'
-import { createNotes } from '@tests/factories/noteFactory.js'
+import { createNotes, createNote } from '@tests/factories/noteFactory.js'
 import { expect, it, vi } from 'vitest'
 
 const mockAxios = new AxiosMockAdapter(apiClient)
@@ -72,6 +73,28 @@ describe('NotesPage', () => {
     expect(mockDone).toHaveBeenCalledTimes(2);
     expect(mockDone).toHaveBeenNthCalledWith(1, 'loading');
     expect(mockDone).toHaveBeenNthCalledWith(2, status);
+  });
+
+  it('creates a new note and prepends it to the list', async () => {
+    const newNote = createNote()
+    mockAxios.onGet('/api/users/1/notes/').reply(200, {
+      data: mockNotes,
+      next: null,
+    })
+    mockAxios.onPost('/api/users/1/notes/').reply(200, newNote)
+
+    const { wrapper } = createComponent()
+    await flushPromises()
+
+    wrapper.vm.newNote.title = newNote.title
+    wrapper.vm.newNote.content = newNote.content
+    await wrapper.vm.createNote()
+    await flushPromises()
+    await nextTick()
+
+    const noteCards = wrapper.findAllComponents({ name: 'NoteCard' })
+    expect(noteCards.length).toBe(3)
+    expect(noteCards[0].props('note').title).toBe(newNote.title) // New note should be first
   })
 })
 

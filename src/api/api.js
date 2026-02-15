@@ -157,3 +157,21 @@ export async function fetchNotes({ userId, title, startDate, endDate, limit, nex
     },
   })
 }
+
+export async function createNote({ userId, title, content, categoryId }) {
+  const url = `${baseURL}/users/${userId}/notes/`
+  return await apiClient.post(url, {
+    title,
+    content,
+    categoryId,
+  })
+}
+
+export async function updateNote({ userId, noteId, title, content, categoryId }) {
+  const url = `${baseURL}/users/${userId}/notes/${noteId}/`
+  return await apiClient.put(url, {
+    title,
+    content,
+    categoryId,
+  })
+}
