@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import SideBar from '@/components/SideBar.vue'
 import SnackBar from '@/components/SnackBar.vue'
+import AlertDialog from '@/components/AlertDialog.vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -17,6 +18,7 @@ const authStore = useAuthStore()
     ></v-layout>
 
     <SnackBar />
+    <AlertDialog />
   </v-app>
 </template>
 

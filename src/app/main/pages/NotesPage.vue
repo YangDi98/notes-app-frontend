@@ -17,6 +17,7 @@ const formValid = ref(false)
 
 const rules = {
   title: [(value) => !!(value && value.trim()) || 'Title is required'],
+  content: [(value) => !!(value && value.trim()) || 'Content is required'],
 }
 
 const form = ref()
@@ -98,6 +99,8 @@ onUnmounted(() => {
             v-model="newNote.content"
             label="New Note Content"
             clearable
+            :rules="rules.content"
+            required
           />
           <div class="d-flex justify-end">
             <v-btn

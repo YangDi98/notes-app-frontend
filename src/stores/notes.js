@@ -8,6 +8,8 @@ export const useNotesStore = defineStore('notes', () => {
   const pending = ref({
     fetchNotes: false,
     createNote: false,
+    deleteNote: false,
+    updateNote: false,
   })
 
   async function fetchNotes({ userId, title, startDate, endDate, limit, next }) {
@@ -37,6 +39,35 @@ export const useNotesStore = defineStore('notes', () => {
     }
   }
 
+  async function updateNote({ userId, noteId, title, content, categoryId }) {
+    try {
+      pending.value.updateNote = true
+      const response = await api.updateNote({ userId, noteId, title, content, categoryId })
+      // Update the note in the list
+      const index = notes.value.findIndex((note) => note.id === noteId)
+      if (index !== -1) {
+        notes.value[index] = response.data
+      }
+    } catch (error) {
+      console.error('Failed to update note:', error)
+    } finally {
+      pending.value.updateNote = false
+    }
+  }
+
+  async function deleteNote({ userId, noteId }) {
+    try {
+      pending.value.deleteNote = true
+      await api.deleteNote({ userId, noteId })
+      // Remove the note from the list
+      notes.value = notes.value.filter((note) => note.id !== noteId)
+    } catch (error) {
+      console.error('Failed to delete note:', error)
+    } finally {
+      pending.value.deleteNote = false
+    }
+  }
+
   return {
     notes,
     pending,
@@ -44,5 +75,7 @@ export const useNotesStore = defineStore('notes', () => {
     notesNextUrl,
     clearNotes,
     createNote,
+    updateNote,
+    deleteNote,
   }
 })

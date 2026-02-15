@@ -175,3 +175,8 @@ export async function updateNote({ userId, noteId, title, content, categoryId })
     categoryId,
   })
 }
+
+export async function deleteNote({ userId, noteId }) {
+  const url = `${baseURL}/users/${userId}/notes/${noteId}`
+  return await apiClient.delete(url)
+}
