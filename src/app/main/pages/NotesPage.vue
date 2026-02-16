@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useNotesStore } from '@/stores/notes'
 import { useNotificationStore } from '@/stores/notification'
 import NoteCard from '@/components/NoteCard.vue'
+import EditNoteModal from '@/components/EditNoteModal.vue'
 const authStore = useAuthStore()
 const notesStore = useNotesStore()
 const notificationStore = useNotificationStore()
@@ -14,6 +15,8 @@ const newNote = ref({
 })
 
 const formValid = ref(false)
+const selectedNote = ref(null)
+const showEditModal = ref(false)
 
 const rules = {
   title: [(value) => !!(value && value.trim()) || 'Title is required'],
@@ -64,6 +67,11 @@ async function createNote() {
       type: 'error',
     })
   }
+}
+
+function editNote(note) {
+  selectedNote.value = note
+  showEditModal.value = true
 }
 
 onMounted(() => {
@@ -123,10 +131,11 @@ onUnmounted(() => {
     >
       <v-row class="pa-4" dense>
         <v-col v-for="note in notesStore.notes" :key="note.id" cols="12" sm="6" md="4" lg="3">
-          <NoteCard data-testid="note-card" :note="note" />
+          <NoteCard data-testid="note-card" :note="note" @edit="editNote" />
         </v-col>
       </v-row>
     </v-infinite-scroll>
+    <EditNoteModal v-model="showEditModal" :note="selectedNote" />
   </div>
 </template>
 
