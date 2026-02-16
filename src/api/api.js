@@ -168,7 +168,7 @@ export async function createNote({ userId, title, content, categoryId }) {
 }
 
 export async function updateNote({ userId, noteId, title, content, categoryId }) {
-  const url = `${baseURL}/users/${userId}/notes/${noteId}/`
+  const url = `${baseURL}/users/${userId}/notes/${noteId}`
   return await apiClient.put(url, {
     title,
     content,

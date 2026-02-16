@@ -1,14 +1,18 @@
 <script setup>
 import { useNotesStore } from '@/stores/notes'
 import { useAlertDialog } from '@/composables/useAlertDialog'
+import { useNotificationStore } from '@/stores/notification'
 const notesStore = useNotesStore()
 const { showAlert } = useAlertDialog()
+const notificationStore = useNotificationStore()
 const props = defineProps({
   note: {
     type: Object,
     required: true,
   },
 })
+
+const emit = defineEmits(['edit'])
 
 function deleteNote() {
   showAlert({
@@ -18,7 +22,18 @@ function deleteNote() {
     cancelText: 'Cancel',
     confirmColor: 'red-darken-4',
     onConfirm: () => {
-      notesStore.deleteNote({ userId: props.note.userId, noteId: props.note.id })
+      try {
+        notesStore.deleteNote({ userId: props.note.userId, noteId: props.note.id })
+        notificationStore.setAlertMessage({
+          message: 'Note deleted successfully',
+          type: 'success',
+        })
+      } catch {
+        notificationStore.setAlertMessage({
+          message: 'Failed to delete note. Please try again later.',
+          type: 'error',
+        })
+      }
     },
   })
 }
@@ -36,7 +51,7 @@ function deleteNote() {
       {{ props.note.content }}
     </v-card-text>
     <v-card-actions class="flex-shrink-0 pb-2">
-      <v-btn color="deep-purple-darken-4" text="Update"></v-btn>
+      <v-btn color="deep-purple-darken-4" text="Update" @click="emit('edit', props.note)"></v-btn>
 
       <v-btn
         data-test="delete-button"
