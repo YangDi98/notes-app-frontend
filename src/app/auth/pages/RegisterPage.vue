@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+import { mdiEye, mdiEyeOff } from '@mdi/js'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -31,6 +32,9 @@ const form = ref({
 })
 
 const formValid = ref(false)
+
+const showPassword = ref(false)
+const showConfirmPassword = ref(false)
 
 const rules = {
   firstName: [(value) => !!value.trim() || 'First Name is required'],
@@ -108,9 +112,11 @@ const rules = {
 
       <v-text-field
         label="Password"
-        type="password"
+        :type="showPassword ? 'text' : 'password'"
         v-model="form.password"
         :rules="rules.password"
+        :append-inner-icon="showPassword ? mdiEyeOff : mdiEye"
+        @click:append-inner="showPassword = !showPassword"
         data-testid="password-field"
         required
       >
@@ -118,9 +124,11 @@ const rules = {
 
       <v-text-field
         label="Confirm Password"
-        type="password"
+        :type="showConfirmPassword ? 'text' : 'password'"
         v-model="form.confirmPassword"
         :rules="rules.confirmPassword"
+        :append-inner-icon="showConfirmPassword ? mdiEyeOff : mdiEye"
+        @click:append-inner="showConfirmPassword = !showConfirmPassword"
         data-testid="confirmPassword-field"
         required
       >
