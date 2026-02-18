@@ -11,6 +11,7 @@ export const useAuthStore = defineStore('auth', () => {
     register: false,
     login: false,
     fetchCurrentUser: false,
+    updatePassword: false,
   })
   const user = ref(null)
   const accessToken = useStorage('accessToken', null)
@@ -96,6 +97,32 @@ export const useAuthStore = defineStore('auth', () => {
     return !!accessToken.value && !!user.value
   }
 
+  async function updatePassword({ currentPassword, newPassword }) {
+    try {
+      pending.value.updatePassword = true
+      await authAPI.updatePassword({ currentPassword, newPassword })
+      notificationStore.setAlertMessage({
+        message: 'Password updated successfully.',
+        type: 'success',
+      })
+    } catch (error) {
+      if (error.response?.status === 401) {
+        notificationStore.setAlertMessage({
+          message: 'Current password is incorrect.',
+          type: 'failure',
+        })
+        return
+      }
+      notificationStore.setAlertMessage({
+        message: error.response?.data?.message || 'Failed to update password.',
+        type: 'failure',
+      })
+      throw error
+    } finally {
+      pending.value.updatePassword = false
+    }
+  }
+
   return {
     user,
     accessToken,
@@ -106,5 +133,6 @@ export const useAuthStore = defineStore('auth', () => {
     fetchCurrentUser,
     isAuthenticated,
     refreshToken,
+    updatePassword,
   }
 })

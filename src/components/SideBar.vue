@@ -1,5 +1,5 @@
 <script setup>
-import { watch, ref } from 'vue'
+import { watch, ref, computed } from 'vue'
 import { mdiNoteMultiple, mdiAccountCircle } from '@mdi/js'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter, useRoute } from 'vue-router'
@@ -9,6 +9,15 @@ const router = useRouter()
 const route = useRoute()
 
 const selectedItem = ref(null)
+
+const initials = computed(() => {
+  if (!authStore.user) return ''
+  const firstInitial = authStore.user.firstName
+    ? authStore.user.firstName.charAt(0).toUpperCase()
+    : ''
+  const lastInitial = authStore.user.lastName ? authStore.user.lastName.charAt(0).toUpperCase() : ''
+  return firstInitial + lastInitial
+})
 
 function navigate(value) {
   console.log('Navigating to:', value)
@@ -25,16 +34,22 @@ watch(
 </script>
 <template>
   <v-navigation-drawer
+    app
     permanent
     :rail="$vuetify.display.mobile"
     :expand-on-hover="$vuetify.display.mobile"
   >
     <v-list>
       <v-list-item
-        prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg"
         :subtitle="authStore.user?.email"
         :title="`${authStore.user?.firstName} ${authStore.user?.lastName}`"
-      ></v-list-item>
+      >
+        <template v-slot:prepend>
+          <v-avatar color="surface-variant">
+            <span class="text-body-2 text-md-body-1">{{ initials }}</span>
+          </v-avatar>
+        </template>
+      </v-list-item>
     </v-list>
 
     <v-divider></v-divider>

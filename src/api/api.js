@@ -62,6 +62,11 @@ apiClient.interceptors.response.use(
         return Promise.reject(error)
       }
 
+      // Don't try to refresh for password update requests - let them handle validation errors
+      if (error.config.url?.includes('/auth/update_password')) {
+        return Promise.reject(error)
+      }
+
       try {
         // If a refresh is already in progress, wait for it
         if (refreshPromise) {
@@ -179,4 +184,12 @@ export async function updateNote({ userId, noteId, title, content, categoryId })
 export async function deleteNote({ userId, noteId }) {
   const url = `${baseURL}/users/${userId}/notes/${noteId}`
   return await apiClient.delete(url)
+}
+
+export async function updatePassword({ currentPassword, newPassword }) {
+  const url = `${baseURL}/auth/update_password`
+  return await apiClient.post(url, {
+    password: currentPassword,
+    newPassword,
+  })
 }
