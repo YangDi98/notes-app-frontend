@@ -3,22 +3,26 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { createRouter, createMemoryHistory } from 'vue-router'
-import { vi } from 'vitest'
 
 // Mock window.history for JSDOM environments
-Object.defineProperty(window, 'history', {
-  value: {
-    pushState: vi.fn(),
-    replaceState: vi.fn(),
-    back: vi.fn(),
-    forward: vi.fn(),
-    go: vi.fn(),
-    length: 1,
-    state: {},
-    _history: [] // Mock the internal _history property that Vue Router accesses
-  },
-  writable: true,
-})
+if (!window.history._history) {
+  // Only add the _history property if it doesn't exist
+  Object.defineProperty(window.history, '_history', {
+    value: [],
+    writable: true,
+    configurable: true
+  })
+}
+
+// Mock window.location for JSDOM environments
+if (!window.location._location) {
+  // Only add the _location property if it doesn't exist
+  Object.defineProperty(window.location, '_location', {
+    value: {},
+    writable: true,
+    configurable: true
+  })
+}
 
 // Mock ResizeObserver for tests
 globalThis.ResizeObserver = class ResizeObserver {
