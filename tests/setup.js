@@ -2,7 +2,7 @@ import { config } from '@vue/test-utils'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createMemoryHistory } from 'vue-router'
 
 // Mock ResizeObserver for tests
 globalThis.ResizeObserver = class ResizeObserver {
@@ -16,7 +16,7 @@ globalThis.ResizeObserver = class ResizeObserver {
 
 // Create a minimal test router with catch-all route
 const router = createRouter({
-  history: createWebHistory(),
+  history: createMemoryHistory(),
   routes: [
     // Catch-all route that handles any path
     { path: '/:pathMatch(.*)*', component: { template: '<div>Mock Route</div>' } },
