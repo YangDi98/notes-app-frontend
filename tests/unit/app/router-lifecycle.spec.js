@@ -3,14 +3,38 @@ import { setupRouterGuards } from '@/router/router-lifecycle.js'
 import { useAuthStore } from '@/stores/auth'
 import { apiClient } from '@/api/api'
 import AxiosMockAdapter from 'axios-mock-adapter'
+import { vi } from 'vitest'
 
 const mockAccessToken = vi.hoisted(() => ({value: null}));
 const mockUseStorage = vi.hoisted(() => vi.fn(() => mockAccessToken));
+
+// Mock @vueuse/core
 vi.mock('@vueuse/core',  async () => {
   const actual = await vi.importActual('@vueuse/core')
   return {
     ...actual,
     useStorage: mockUseStorage,
+  }
+})
+
+// Mock vue-router to prevent history access issues
+const mockRouter = vi.hoisted(() => ({
+  beforeEach: vi.fn(),
+  push: vi.fn().mockResolvedValue(undefined),
+  replace: vi.fn().mockResolvedValue(undefined),
+  currentRoute: { value: { name: 'home', fullPath: '/' } }
+}))
+
+vi.mock('vue-router', async () => {
+  const actual = await vi.importActual('vue-router')
+  return {
+    ...actual,
+    useRouter: () => mockRouter,
+    useRoute: () => mockRouter.currentRoute.value,
+    // Mock navigation functions to prevent real router calls
+    createRouter: vi.fn(() => mockRouter),
+    createWebHistory: vi.fn(() => ({})),
+    createMemoryHistory: vi.fn(() => ({}))
   }
 })
 
