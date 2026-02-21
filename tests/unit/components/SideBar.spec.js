@@ -18,6 +18,21 @@ vi.mock('@vueuse/core', async () => {
 
 const mockAxios = new AxiosMockAdapter(apiClient)
 
+// Mock router methods
+const mockPush = vi.hoisted(() => vi.fn())
+vi.mock('vue-router', async () => {
+  const actual = await vi.importActual('vue-router')
+  return {
+    ...actual,
+    useRouter: () => ({
+      push: mockPush,
+    }),
+    useRoute: () => ({
+      name: 'notes',
+    }),
+  }
+})
+
 describe('SideBar.vue', () => {
   beforeEach(() => {
     // Reset the mock token value before each test
