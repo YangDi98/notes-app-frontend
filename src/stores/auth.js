@@ -12,6 +12,7 @@ export const useAuthStore = defineStore('auth', () => {
     login: false,
     fetchCurrentUser: false,
     updatePassword: false,
+    logout: false,
   })
   const user = ref(null)
   const accessToken = useStorage('accessToken', null)
@@ -78,7 +79,7 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (error) {
       // If token is invalid, clear it
       if (error.response?.status === 401) {
-        logout()
+        await logout()
       }
       throw error
     } finally {
@@ -86,11 +87,25 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  function logout() {
-    accessToken.value = null
-    user.value = null
+  async function logout() {
+    pending.value.logout = true
+
     // Also clear from localStorage to ensure consistency
-    localStorage.removeItem('accessToken')
+    try {
+      await authAPI.logout()
+
+      accessToken.value = null
+
+      user.value = null
+    } catch (e) {
+      console.log(e)
+      notificationStore.setAlertMessage({
+        message: 'Logout failed.',
+        type: 'failure',
+      })
+    } finally {
+      pending.value.logout = false
+    }
   }
 
   function isAuthenticated() {

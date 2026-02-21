@@ -1,6 +1,6 @@
 <script setup>
 import { watch, ref, computed } from 'vue'
-import { mdiNoteMultiple, mdiAccountCircle } from '@mdi/js'
+import { mdiNoteMultiple, mdiAccountCircle, mdiLogout } from '@mdi/js'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter, useRoute } from 'vue-router'
 
@@ -24,6 +24,11 @@ function navigate(value) {
   router.push({ name: value[0] })
 }
 
+async function logout() {
+  await authStore.logout()
+  router.push('/login')
+}
+
 watch(
   () => route.name,
   (newRoute) => {
@@ -39,34 +44,51 @@ watch(
     :rail="$vuetify.display.mobile"
     :expand-on-hover="$vuetify.display.mobile"
   >
-    <v-list>
-      <v-list-item
-        :subtitle="authStore.user?.email"
-        :title="`${authStore.user?.firstName} ${authStore.user?.lastName}`"
-      >
-        <template v-slot:prepend>
-          <v-avatar color="surface-variant">
-            <span class="text-body-2 text-md-body-1">{{ initials }}</span>
-          </v-avatar>
-        </template>
-      </v-list-item>
-    </v-list>
+    <div class="d-flex flex-column fill-height justify-space-between">
+      <div>
+        <v-list>
+          <v-list-item
+            :subtitle="authStore.user?.email"
+            :title="`${authStore.user?.firstName} ${authStore.user?.lastName}`"
+          >
+            <template v-slot:prepend>
+              <v-avatar color="surface-variant">
+                <span class="text-body-2 text-md-body-1">{{ initials }}</span>
+              </v-avatar>
+            </template>
+          </v-list-item>
+        </v-list>
 
-    <v-divider></v-divider>
+        <v-divider></v-divider>
 
-    <v-list density="compact" nav v-model:selected="selectedItem" @update:selected="navigate">
-      <v-list-item
-        :prepend-icon="mdiNoteMultiple"
-        title="My Notes"
-        value="notes"
-        color="primary"
-      ></v-list-item>
-      <v-list-item
-        :prepend-icon="mdiAccountCircle"
-        title="My Account"
-        value="account"
-        color="primary"
-      ></v-list-item>
-    </v-list>
+        <v-list density="compact" nav v-model:selected="selectedItem" @update:selected="navigate">
+          <v-list-item
+            :prepend-icon="mdiNoteMultiple"
+            title="My Notes"
+            value="notes"
+            color="primary"
+          />
+          <v-list-item
+            :prepend-icon="mdiAccountCircle"
+            title="My Account"
+            value="account"
+            color="primary"
+          />
+        </v-list>
+      </div>
+      <div class="mb-4">
+        <v-list>
+          <v-list-item
+            :prepend-icon="mdiLogout"
+            :title="authStore.pending.logout ? 'Logging out...' : 'Logout'"
+            base-color="primary"
+            variant="tonal"
+            :disabled="authStore.pending.logout"
+            data-test="logout-button"
+            @click="logout"
+          />
+        </v-list>
+      </div>
+    </div>
   </v-navigation-drawer>
 </template>
