@@ -193,3 +193,8 @@ export async function updatePassword({ currentPassword, newPassword }) {
     newPassword,
   })
 }
+
+export async function logout() {
+  const url = `${baseURL}/auth/logout`
+  return await apiClient.post(url)
+}
