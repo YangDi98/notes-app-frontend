@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { mdiEye, mdiEyeOff } from '@mdi/js'
+import AppLogo from '@/components/AppLogo.vue'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -75,6 +76,7 @@ const rules = {
 
 <template>
   <div class="d-flex flex-column justify-center align-center h-fit ga-2" style="min-height: 100%">
+    <AppLogo class="mb-4" />
     <v-form
       v-model="formValid"
       class="w-75 w-sm-50 w-md-33"

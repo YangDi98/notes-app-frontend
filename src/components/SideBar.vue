@@ -3,6 +3,8 @@ import { watch, ref, computed } from 'vue'
 import { mdiNoteMultiple, mdiAccountCircle, mdiLogout } from '@mdi/js'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter, useRoute } from 'vue-router'
+import AppLogo from '@/components/AppLogo.vue'
+import { disclaimer } from '@/contants.js'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -88,6 +90,14 @@ watch(
             @click="logout"
           />
         </v-list>
+        <AppLogo class="mx-auto mb-2" />
+
+        <!-- Disclaimer -->
+        <v-card color="warning" variant="tonal" class="mx-3 mb-2">
+          <v-card-text class="text-caption text-center">
+            {{ disclaimer }}
+          </v-card-text>
+        </v-card>
       </div>
     </div>
   </v-navigation-drawer>
