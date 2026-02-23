@@ -45,9 +45,20 @@ export function setupRouterGuards(router) {
 
     // If user has token and trying to access auth route, redirect to notes
     if (accessToken.value && !requiresAuth) {
-      // Check if there's a redirect parameter
-      const redirectTo = to.query.redirect || { name: 'notes' }
-      return next(redirectTo)
+      // Check if there's a redirect parameter, but filter out invalid targets
+      let redirectTo = to.query.redirect
+
+      // Don't redirect to logout or other auth routes
+      if (
+        redirectTo &&
+        (redirectTo.includes('/logout') ||
+          redirectTo.includes('/login') ||
+          redirectTo.includes('/register'))
+      ) {
+        redirectTo = null
+      }
+
+      return next(redirectTo || { name: 'notes' })
     }
 
     // If user has token, allow access to protected routes

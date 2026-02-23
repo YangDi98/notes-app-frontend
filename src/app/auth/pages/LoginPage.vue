@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+import AppLogo from '@/components/AppLogo.vue'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -33,6 +34,7 @@ async function login() {
 </script>
 <template>
   <div class="d-flex flex-column ga-2 justify-center align-center h-100">
+    <AppLogo class="mb-4" />
     <v-form class="w-75 w-sm-50 w-md-33" validate-on="blur" @submit.prevent="login">
       <v-text-field v-model="form.email" label="Email" type="email" :rules="rules.email" required>
       </v-text-field>

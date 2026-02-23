@@ -77,8 +77,9 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = response.data
       return user.value
     } catch (error) {
+      console.log('Failed to fetch current user:', error)
       // If token is invalid, clear it
-      if (error.response?.status === 401) {
+      if (error.response?.status === 401 && accessToken.value) {
         await logout()
       }
       throw error
