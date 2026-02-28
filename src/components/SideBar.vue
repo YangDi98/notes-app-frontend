@@ -1,6 +1,6 @@
 <script setup>
 import { watch, ref, computed } from 'vue'
-import { mdiNoteMultiple, mdiAccountCircle, mdiLogout } from '@mdi/js'
+import { mdiNoteMultiple, mdiAccountCircle, mdiLogout, mdiNoteCheckOutline } from '@mdi/js'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter, useRoute } from 'vue-router'
 import AppLogo from '@/components/AppLogo.vue'
@@ -89,7 +89,20 @@ watch(
             @click="logout"
           />
         </v-list>
-        <AppLogo class="mx-auto mb-2" />
+
+        <!-- Logo item that responds to rail behavior -->
+        <v-list>
+          <v-list-item>
+            <template v-slot:prepend>
+              <v-avatar color="primary" size="small">
+                <v-icon color="white" :icon="mdiNoteCheckOutline" size="xsmall"></v-icon>
+              </v-avatar>
+            </template>
+            <template v-slot:title>
+              <AppLogo />
+            </template>
+          </v-list-item>
+        </v-list>
       </div>
     </div>
   </v-navigation-drawer>
