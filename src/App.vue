@@ -38,9 +38,4 @@ const authStore = useAuthStore()
 .footer {
   max-height: fit-content;
 }
-
-.system-bar {
-  height: fit-content !important;
-  padding: 0.5rem;
-}
 </style>

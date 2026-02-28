@@ -198,6 +198,125 @@ describe('Router Lifecycle', () => {
           expect(mockNext).toHaveBeenCalledWith({name: 'notes'})
         })
 
+        describe('redirect validation security', () => {
+          beforeEach(() => {
+            mockAccessToken.value = 'valid-token'
+            authStore.user = { id: 1, name: 'Test User' }
+          })
+
+          it('should reject non-string redirect values', async () => {
+            const to = {
+              name: 'login',
+              meta: { requiresAuth: false },
+              query: { redirect: ['malicious', 'array'] }, // Non-string value
+            }
+            const from = { name: 'home' }
+
+            await navigationGuard(to, from, mockNext)
+
+            expect(mockNext).toHaveBeenCalledWith({ name: 'notes' })
+          })
+
+          it('should reject external URLs and unknown routes', async () => {
+            // Mock router.resolve to return empty matched array for unknown routes
+            mockRouter.resolve.mockReturnValue({ matched: [] })
+
+            const to = {
+              name: 'login',
+              meta: { requiresAuth: false },
+              query: { redirect: '//evil.com' },
+            }
+            const from = { name: 'home' }
+
+            await navigationGuard(to, from, mockNext)
+
+            expect(mockRouter.resolve).toHaveBeenCalledWith('//evil.com')
+            expect(mockNext).toHaveBeenCalledWith({ name: 'notes' })
+          })
+
+          it('should reject redirects to /login', async () => {
+            // Mock router.resolve to return valid route for /login
+            mockRouter.resolve.mockReturnValue({ matched: [{ path: '/login' }] })
+
+            const to = {
+              name: 'register',
+              meta: { requiresAuth: false },
+              query: { redirect: '/login' },
+            }
+            const from = { name: 'home' }
+
+            await navigationGuard(to, from, mockNext)
+
+            expect(mockNext).toHaveBeenCalledWith({ name: 'notes' })
+          })
+
+          it('should reject redirects to /logout', async () => {
+            mockRouter.resolve.mockReturnValue({ matched: [{ path: '/logout' }] })
+
+            const to = {
+              name: 'login',
+              meta: { requiresAuth: false },
+              query: { redirect: '/logout' },
+            }
+            const from = { name: 'home' }
+
+            await navigationGuard(to, from, mockNext)
+
+            expect(mockNext).toHaveBeenCalledWith({ name: 'notes' })
+          })
+
+          it('should reject redirects to /register', async () => {
+            mockRouter.resolve.mockReturnValue({ matched: [{ path: '/register' }] })
+
+            const to = {
+              name: 'login',
+              meta: { requiresAuth: false },
+              query: { redirect: '/register' },
+            }
+            const from = { name: 'home' }
+
+            await navigationGuard(to, from, mockNext)
+
+            expect(mockNext).toHaveBeenCalledWith({ name: 'notes' })
+          })
+
+          it('should reject redirects to auth sub-routes', async () => {
+            mockRouter.resolve.mockReturnValue({ matched: [{ path: '/login/forgot-password' }] })
+
+            const to = {
+              name: 'register',
+              meta: { requiresAuth: false },
+              query: { redirect: '/login/forgot-password' },
+            }
+            const from = { name: 'home' }
+
+            await navigationGuard(to, from, mockNext)
+
+            expect(mockNext).toHaveBeenCalledWith({ name: 'notes' })
+          })
+
+          it('should allow valid internal redirects', async () => {
+            // Mock router.resolve to return valid route for /dashboard
+            mockRouter.resolve.mockReturnValue({ matched: [{ path: '/dashboard' }] })
+
+            const to = {
+              name: 'login',
+              meta: { requiresAuth: false },
+              query: { redirect: '/dashboard' },
+            }
+            const from = { name: 'home' }
+
+            await navigationGuard(to, from, mockNext)
+
+            expect(mockNext).toHaveBeenCalledWith('/dashboard')
+          })
+
+          afterEach(() => {
+            // Reset mock to default behavior
+            mockRouter.resolve.mockReturnValue({ matched: [{ meta: { requiresAuth: true } }] })
+          })
+        })
+
         it('should fetch user data when token exists but no user data', async () => {
           // Ensure we start with no user data
           authStore.user = null
