@@ -59,19 +59,20 @@ export function setupRouterGuards(router) {
               // Route doesn't exist (includes external URLs)
               redirectTo = null
             }
-          } catch  {
+          } catch {
             // Malformed or unexpected redirect string; treat as invalid
             redirectTo = null
           }
         }
-        if (redirectTo && (
-          redirectTo === '/logout' ||
-          redirectTo === '/login' ||
-          redirectTo === '/register' ||
-          redirectTo.startsWith('/logout/') ||
-          redirectTo.startsWith('/login/') ||
-          redirectTo.startsWith('/register/')
-        )) {
+        if (
+          redirectTo &&
+          (redirectTo === '/logout' ||
+            redirectTo === '/login' ||
+            redirectTo === '/register' ||
+            redirectTo.startsWith('/logout/') ||
+            redirectTo.startsWith('/login/') ||
+            redirectTo.startsWith('/register/'))
+        ) {
           // Don't redirect to auth routes
           redirectTo = null
         }
