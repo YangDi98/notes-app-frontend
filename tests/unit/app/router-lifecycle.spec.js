@@ -62,6 +62,8 @@ describe('Router Lifecycle', () => {
     // Use the mocked router (which has resolve method)
     router = mockRouter
     router.beforeEach.mockClear()
+    router.resolve.mockReset()
+    router.resolve.mockReturnValue({ matched: [{ meta: { requiresAuth: true }}]})
 
     // Mock next function
     mockNext = vi.fn()
