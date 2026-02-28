@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { mdiEye, mdiEyeOff } from '@mdi/js'
+import DisclaimerWarning from '@/components/DisclaimerWarning.vue'
 
 const authStore = useAuthStore()
 
@@ -67,6 +68,7 @@ async function updatePassword() {
 <template>
   <div>
     <div class="pa-4">
+      <DisclaimerWarning />
       <h1>My Account</h1>
       <p>This is the account page. You can view and edit your account details here.</p>
     </div>
