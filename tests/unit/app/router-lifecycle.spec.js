@@ -22,7 +22,8 @@ const mockRouter = vi.hoisted(() => ({
   beforeEach: vi.fn(),
   push: vi.fn().mockResolvedValue(undefined),
   replace: vi.fn().mockResolvedValue(undefined),
-  currentRoute: { value: { name: 'home', fullPath: '/' } }
+  currentRoute: { value: { name: 'home', fullPath: '/' } },
+  resolve: vi.fn().mockReturnValue({matched: [{meta: { requiresAuth: true }}]}),
 }))
 
 vi.mock('vue-router', async () => {
@@ -54,15 +55,13 @@ describe('Router Lifecycle', () => {
     authStore = useAuthStore()
 
     // Reset mocks and mock state
-
     mockAxios.reset()
     mockAccessToken.value = null
     authStore.user = null
 
-    // Mock router
-    router = {
-      beforeEach: vi.fn(),
-    }
+    // Use the mocked router (which has resolve method)
+    router = mockRouter
+    router.beforeEach.mockClear()
 
     // Mock next function
     mockNext = vi.fn()

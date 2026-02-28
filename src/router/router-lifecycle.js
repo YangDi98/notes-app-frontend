@@ -45,17 +45,28 @@ export function setupRouterGuards(router) {
 
     // If user has token and trying to access auth route, redirect to notes
     if (accessToken.value && !requiresAuth) {
-      // Check if there's a redirect parameter, but filter out invalid targets
+      // Check if there's a redirect parameter, but validate it for security
       let redirectTo = to.query.redirect
 
-      // Don't redirect to logout or other auth routes
-      if (
-        redirectTo &&
-        (redirectTo.includes('/logout') ||
-          redirectTo.includes('/login') ||
-          redirectTo.includes('/register'))
-      ) {
-        redirectTo = null
+      // Comprehensive validation to prevent open redirect attacks
+      if (redirectTo) {
+        // Validate redirect parameter
+        if (typeof redirectTo !== 'string') {
+          redirectTo = null
+        } else if (router.resolve(redirectTo).matched.length === 0) {
+          // Route doesn't exist (includes external URLs)
+          redirectTo = null
+        } else if (
+          redirectTo === '/logout' ||
+          redirectTo === '/login' ||
+          redirectTo === '/register' ||
+          redirectTo.startsWith('/logout/') ||
+          redirectTo.startsWith('/login/') ||
+          redirectTo.startsWith('/register/')
+        ) {
+          // Don't redirect to auth routes
+          redirectTo = null
+        }
       }
 
       return next(redirectTo || { name: 'notes' })

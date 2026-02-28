@@ -5,6 +5,7 @@ import { useNotesStore } from '@/stores/notes'
 import { useNotificationStore } from '@/stores/notification'
 import NoteCard from '@/components/NoteCard.vue'
 import EditNoteModal from '@/components/EditNoteModal.vue'
+import DisclaimerWarning from '@/components/DisclaimerWarning.vue'
 const authStore = useAuthStore()
 const notesStore = useNotesStore()
 const notificationStore = useNotificationStore()
@@ -86,6 +87,7 @@ onUnmounted(() => {
 <template>
   <div>
     <div class="pa-4">
+      <DisclaimerWarning />
       <h1>Welcome, {{ authStore.user?.firstName || 'User' }}!</h1>
       <p>This is your notes dashboard. Here you can manage all your notes.</p>
     </div>
