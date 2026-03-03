@@ -96,5 +96,49 @@ describe('NotesPage', () => {
     expect(noteCards.length).toBe(3)
     expect(noteCards[0].props('note').title).toBe(newNote.title) // New note should be first
   })
+
+  it('prevents duplicate notes when loading more after creating a note', async () => {
+    const newNote = createNote()
+
+    // Initial load with 2 existing notes
+    mockAxios.onGet('/api/users/1/notes/').reply(200, {
+      data: mockNotes,
+      next: '/users/1/notes/?cursor=next',
+    })
+
+    // Create note endpoint
+    mockAxios.onPost('/api/users/1/notes/').reply(200, newNote)
+
+    // Load more endpoint that returns the created note (simulating server returning it)
+    mockAxios.onGet('/api/users/1/notes/?cursor=next').reply(200, {
+      data: [newNote, createNote()], // API returns the created note + 1 specific new note
+      next: null,
+    })
+
+    const { wrapper } = createComponent()
+    await flushPromises()
+
+    // Create a new note
+    wrapper.vm.newNote.title = newNote.title
+    wrapper.vm.newNote.content = newNote.content
+    await wrapper.vm.createNote()
+    await flushPromises()
+    await nextTick()
+
+    // Should have 3 notes: 2 initial + 1 created
+    expect(wrapper.findAllComponents({ name: 'NoteCard' }).length).toBe(3)
+
+    // Load more notes (which includes the duplicate)
+    await wrapper.vm.fetchNotes()
+    await flushPromises()
+    await nextTick()
+
+    // Should have 4 notes total (no duplicates): 2 initial + 1 created + 1 new from load more
+    const finalNoteCards = wrapper.findAllComponents({ name: 'NoteCard' })
+    expect(finalNoteCards.length).toBe(4)
+
+    // Verify the created note only appears once (should still be first)
+    expect(finalNoteCards[0].props('note').title).toBe(newNote.title)
+  })
 })
 
