@@ -16,7 +16,12 @@ export const useNotesStore = defineStore('notes', () => {
     try {
       pending.value.fetchNotes = true
       const response = await api.fetchNotes({ userId, title, startDate, endDate, limit, next })
-      notes.value = [...notes.value, ...response.data.data]
+
+      // Filter out duplicates by checking existing note IDs
+      const existingIds = new Set(notes.value.map(note => note.id))
+      const newNotes = response.data.data.filter(note => !existingIds.has(note.id))
+
+      notes.value = [...notes.value, ...newNotes]
       notesNextUrl.value = response.data.next
     } finally {
       pending.value.fetchNotes = false
