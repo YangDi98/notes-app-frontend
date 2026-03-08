@@ -7,7 +7,9 @@ import router from '../router/index.js'
 const baseURL = import.meta.env.DEV ? '/api' : import.meta.env.VITE_NOTES_BACKEND_URL
 
 // Configure axios to throw errors for bad status codes
-export const apiClient = axios.create({})
+export const apiClient = axios.create({
+  withCredentials: true,
+})
 
 // Create reactive access token storage
 const accessToken = useStorage('accessToken', null)
