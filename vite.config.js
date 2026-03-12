@@ -16,7 +16,6 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: env.VITE_NOTES_BACKEND_URL,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
           cookieDomainRewrite: 'localhost',
           cookiePathRewrite: '/',
           onProxyReq: (proxyReq, req) => {
