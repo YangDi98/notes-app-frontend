@@ -3,8 +3,8 @@ import { decamelizeKeys, camelizeKeys } from 'humps'
 import { useStorage } from '@vueuse/core'
 import router from '../router/index.js'
 
-// Always use /api prefix since backend now has /api routes
-const baseURL = import.meta.env.DEV ? '/api' : `${import.meta.env.VITE_NOTES_BACKEND_URL}/api`
+// Always use relative /api - proxy handles routing in both dev and prod
+const baseURL = '/api'
 
 // Configure axios to throw errors for bad status codes
 export const apiClient = axios.create({
