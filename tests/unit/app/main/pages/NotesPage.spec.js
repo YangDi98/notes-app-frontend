@@ -58,7 +58,7 @@ describe('NotesPage', () => {
   });
 
   it.each([
-    [200, '/users/1/notes/?cursor_created_at=2026-02-07+20:06:12.760315&cursor_id=2&limit=100', 'ok'],
+    [200, '/api/users/1/notes/?cursor_created_at=2026-02-07+20:06:12.760315&cursor_id=2&limit=100', 'ok'],
     [200, null, 'empty'],
     [400, null, 'error'],
   ])('set done status correctly', async (code, next, status) => {
@@ -103,7 +103,7 @@ describe('NotesPage', () => {
     // Initial load with 2 existing notes
     mockAxios.onGet('/api/users/1/notes/').reply(200, {
       data: mockNotes,
-      next: '/users/1/notes/?cursor=next',
+      next: '/api/users/1/notes/?cursor=next',
     })
 
     // Create note endpoint
