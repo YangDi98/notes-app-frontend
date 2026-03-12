@@ -153,7 +153,7 @@ export async function refreshAccessToken() {
 export async function fetchNotes({ userId, title, startDate, endDate, limit, next }) {
   const url = `${baseURL}/users/${userId}/notes/`
   if (next) {
-    return await apiClient.get(`${baseURL}${next}`)
+    return await apiClient.get(next)  // Use next URL directly - it already includes /api
   }
   return await apiClient.get(url, {
     params: {
