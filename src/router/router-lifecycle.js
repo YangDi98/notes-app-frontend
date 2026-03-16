@@ -34,8 +34,9 @@ export function setupRouterGuards(router) {
 
         await authStore.fetchCurrentUser()
       } catch (error) {
-        // If fetching fails, token might be invalid - redirect to login
+        // If fetching fails, token might be invalid - clear it and redirect to login
         console.log('Failed to fetch current user during navigation:', error)
+        accessToken.value = null // Clear the invalid token to prevent infinite loop
         return next({
           name: 'login',
           query: { redirect: to.fullPath },
