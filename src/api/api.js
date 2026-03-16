@@ -3,8 +3,8 @@ import { decamelizeKeys, camelizeKeys } from 'humps'
 import { useStorage } from '@vueuse/core'
 import router from '../router/index.js'
 
-// Always use relative /api - proxy handles routing in both dev and prod
-const baseURL = '/api'
+// Use proxy locally (/api) but direct backend URL in production
+const baseURL = import.meta.env.DEV ? '/api' : `${import.meta.env.VITE_NOTES_BACKEND_URL}/api`
 
 // Configure axios to throw errors for bad status codes
 export const apiClient = axios.create({
@@ -129,16 +129,8 @@ export async function fetchCurrentUser() {
 }
 
 export async function refreshAccessToken() {
-  // Extract CSRF token from cookie
-  const csrfToken = document.cookie
-    .split('; ')
-    .find((row) => row.startsWith('csrf_refresh_token='))
-    ?.split('=')[1]
 
   const headers = {}
-  if (csrfToken) {
-    headers['X-CSRF-TOKEN'] = csrfToken
-  }
 
   return await apiClient.post(
     `${baseURL}/auth/refresh`,
