@@ -3,11 +3,32 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { mdiEye, mdiEyeOff } from '@mdi/js'
 import DisclaimerWarning from '@/components/DisclaimerWarning.vue'
+import isEqual from 'lodash/isEqual';
 
 const authStore = useAuthStore()
 
+const languageOptions = [
+  { title: 'English', value: 'en_CA'},
+  { title: '中文', value: 'zh_CN'}
+]
+
+const settingsFormRef = ref(null)
+const settingsForm = ref({
+  preferredLanguage: authStore.user?.preferredLanguage,
+  firstName: authStore.user?.firstName,
+  lastName: authStore.user?.lastName,
+})
+const initialSettingsForm = ref({ ...settingsForm.value }) // Make it reactive
+const settingsFormValid = ref(false)
+const settingsFormError = ref('')
+
+const settingsFormRules = {
+  firstName: [(value) => !!value.trim() || 'First name is required'],
+  lastName: [(value) => !!value.trim() || 'Last name is required'],
+}
+
 // Password update form
-const form = ref(null)
+const passwordFormRef = ref(null)
 const passwordFormValid = ref(false)
 const passwordError = ref('')
 const passwordForm = ref({
@@ -56,11 +77,27 @@ async function updatePassword() {
       confirmPassword: '',
     }
 
-    form.value?.reset()
+    passwordFormRef.value?.reset()
   } catch {
     passwordError.value = 'Failed to update password'
   } finally {
     passwordFormValid.value = false
+  }
+}
+
+async function saveSettings() {
+  settingsFormError.value = ''
+
+  try {
+    await authStore.updateProfile({
+      userId: authStore.user.id,
+      firstName: settingsForm.value.firstName,
+      lastName: settingsForm.value.lastName,
+      preferredLanguage: settingsForm.value.preferredLanguage,
+    })
+    initialSettingsForm.value = { ...settingsForm.value } // Update initial form state
+  } catch {
+    settingsFormError.value = 'Failed to update profile'
   }
 }
 </script>
@@ -85,9 +122,40 @@ async function updatePassword() {
     </div>
     <div class="pa-4">
       <v-card>
+        <v-card-title>Settings</v-card-title>
+        <v-card-text>
+          <v-form ref="settingsFormRef" v-model="settingsFormValid" @submit.prevent="saveSettings">
+            <v-text-field
+              v-model="settingsForm.firstName"
+              label="First Name"
+              :rules="settingsFormRules.firstName"
+              required
+            />
+            <v-text-field
+              v-model="settingsForm.lastName"
+              label="Last Name"
+              :rules="settingsFormRules.lastName"
+              required
+            />
+            <v-select
+            :items="languageOptions"
+            v-model="settingsForm.preferredLanguage"
+            label="Preferred Language"
+          />
+          <v-btn data-test="settings-submit" class="mt-2" color="primary" type="submit" :disabled="!settingsFormValid || isEqual(settingsForm, initialSettingsForm) || authStore.pending.updateProfile"
+          :loading="authStore.pending.updateProfile">
+            Save
+          </v-btn>
+          </v-form>
+
+        </v-card-text>
+      </v-card>
+    </div>
+    <div class="pa-4">
+      <v-card>
         <v-card-title>Update Password</v-card-title>
         <v-card-text>
-          <v-form ref="form" v-model="passwordFormValid" @submit.prevent="updatePassword">
+          <v-form ref="passwordFormRef" v-model="passwordFormValid" @submit.prevent="updatePassword">
             <v-text-field
               v-model="passwordForm.currentPassword"
               label="Current Password"
@@ -123,6 +191,7 @@ async function updatePassword() {
             </v-alert>
 
             <v-btn
+              data-test="password-submit"
               type="submit"
               color="primary"
               :loading="authStore.pending.updatePassword"

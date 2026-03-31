@@ -192,3 +192,12 @@ export async function logout() {
   const url = `${baseURL}/auth/logout`
   return await apiClient.post(url)
 }
+
+export async function updateProfile({ userId, firstName, lastName, preferredLanguage }) {
+  const url = `${baseURL}/users/${userId}`
+  return await apiClient.patch(url, {
+    firstName,
+    lastName,
+    preferredLanguage,
+  })
+}
