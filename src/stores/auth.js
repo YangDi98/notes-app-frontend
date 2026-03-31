@@ -13,6 +13,7 @@ export const useAuthStore = defineStore('auth', () => {
     fetchCurrentUser: false,
     updatePassword: false,
     logout: false,
+    updateProfile: false,
   })
   const user = ref(null)
   const accessToken = useStorage('accessToken', null)
@@ -139,6 +140,26 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function updateProfile({ userId, firstName, lastName, preferredLanguage }) {
+    try {
+      pending.value.updateProfile = true
+      const response = await authAPI.updateProfile({ userId, firstName, lastName, preferredLanguage })
+      user.value = response.data
+      notificationStore.setAlertMessage({
+        message: 'User information updated successfully.',
+        type: 'success',
+      })
+    } catch (error) {
+      notificationStore.setAlertMessage({
+        message: error.response?.data?.message || 'Failed to update user information.',
+        type: 'failure',
+      })
+      throw error
+    } finally {
+      pending.value.updateProfile = false
+    }
+  }
+
   return {
     user,
     accessToken,
@@ -150,5 +171,6 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     refreshToken,
     updatePassword,
+    updateProfile,
   }
 })
