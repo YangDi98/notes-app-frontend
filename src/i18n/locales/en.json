@@ -1,0 +1,102 @@
+{
+  "app": {
+    "name": "QuickMemo",
+    "disclaimer": "This is a demo application created for learning purposes only. Do not use real credentials or sensitive information."
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "update": "Update",
+    "user": "User",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "english": "English",
+    "chinese": "中文"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "loggingOut": "Logging out...",
+    "signIn": "Sign in",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?"
+  },
+  "notes": {
+    "myNotes": "My Notes",
+    "welcome": "Welcome",
+    "dashboardDescription": "This is your notes dashboard. Here you can manage all your notes.",
+    "newNoteTitle": "New Note Title",
+    "newNoteContent": "New Note Content",
+    "addNote": "Add Note",
+    "editNote": "Edit Note",
+    "title": "Title",
+    "content": "Content"
+  },
+  "account": {
+    "myAccount": "My Account",
+    "accountDescription": "This is the account page. You can view and edit your account details here.",
+    "accountDetails": "Account Details",
+    "settings": "Settings",
+    "preferredLanguage": "Preferred Language",
+    "name": "Name:",
+    "emailLabel": "Email:",
+    "updatePassword": "Update Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password"
+  },
+  "validation": {
+    "titleRequired": "Title is required",
+    "contentRequired": "Content is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Email must be valid",
+    "passwordRequired": "Password is required",
+    "passwordComplexity": "Password must be at least 9 characters with uppercase, lowercase, digit, and special character ({'@'}$#%)",
+    "confirmPasswordRequired": "Please confirm your password",
+    "passwordsMustMatch": "Passwords must match",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "currentPasswordRequired": "Current password is required",
+    "newPasswordRequired": "New password is required"
+  },
+  "notifications": {
+    "registrationSuccess": "Registration successful.",
+    "registrationFailed": "Registration failed.",
+    "loginSuccess": "Login successful.",
+    "loginFailed": "Login failed.",
+    "logoutFailed": "Logout failed.",
+    "passwordUpdateSuccess": "Password updated successfully.",
+    "passwordIncorrect": "Current password is incorrect.",
+    "passwordUpdateFailed": "Failed to update password.",
+    "profileUpdateSuccess": "User information updated successfully.",
+    "profileUpdateFailed": "Failed to update user information.",
+    "noteCreatedSuccess": "Note created successfully!",
+    "noteCreateFailed": "Failed to create note. Please try again later.",
+    "noteLoadFailed": "Failed to load notes. Please try again later.",
+    "noteUpdatedSuccess": "Note updated successfully",
+    "noteUpdateFailed": "Failed to update note. Please try again later.",
+    "noteDeletedSuccess": "Note deleted successfully",
+    "noteDeleteFailed": "Failed to delete note. Please try again later.",
+    "failedUpdateProfile": "Failed to update profile",
+    "failedUpdatePassword": "Failed to update password"
+  },
+  "dialog": {
+    "confirmAction": "Confirm Action",
+    "areYouSure": "Are you sure?",
+    "confirmDeletion": "Confirm Deletion",
+    "deleteNoteConfirm": "Are you sure you want to delete this note? This action cannot be undone."
+  },
+  "notFound": {
+    "title": "404 - Page Not Found",
+    "message": "The page you're looking for doesn't exist or has been moved.",
+    "goHome": "Go Home",
+    "goBack": "Go Back"
+  }
+}

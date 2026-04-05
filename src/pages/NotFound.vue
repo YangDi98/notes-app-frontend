@@ -2,16 +2,18 @@
   <div class="d-flex flex-column align-center justify-center h-100 pa-8">
     <v-icon size="120" color="grey"> $alert </v-icon>
 
-    <h1 class="text-h3 mt-4 mb-2">404 - Page Not Found</h1>
+    <h1 class="text-h3 mt-4 mb-2">{{ $t('notFound.title') }}</h1>
 
     <p class="text-h6 text-center mb-6 text-grey">
-      The page you're looking for doesn't exist or has been moved.
+      {{ $t('notFound.message') }}
     </p>
 
     <div class="d-flex ga-4">
-      <v-btn color="primary" variant="elevated" @click="goHome"> Go Home </v-btn>
+      <v-btn color="primary" variant="elevated" @click="goHome">
+        {{ $t('notFound.goHome') }}
+      </v-btn>
 
-      <v-btn variant="outlined" @click="goBack"> Go Back </v-btn>
+      <v-btn variant="outlined" @click="goBack"> {{ $t('notFound.goBack') }} </v-btn>
     </div>
   </div>
 </template>

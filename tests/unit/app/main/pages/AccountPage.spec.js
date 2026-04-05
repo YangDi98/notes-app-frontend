@@ -7,12 +7,14 @@ import { useNotificationStore } from '@/stores/notification'
 import { apiClient } from '@/api/api'
 import AxiosMockAdapter from 'axios-mock-adapter'
 import { expect, it } from 'vitest'
+import i18n from '@/i18n'
 
 const mockAxios = new AxiosMockAdapter(apiClient)
 
 describe('AccountPage', () => {
   beforeEach(() => {
     mockAxios.reset()
+    i18n.global.locale.value = 'en'
   })
 
   afterEach(() => {
@@ -28,7 +30,7 @@ describe('AccountPage', () => {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@example.com',
-      preferredLanguage: 'en_CA'
+      preferredLanguage: 'en_CA',
     }
     const notificationStore = useNotificationStore()
     const wrapper = mount(AccountPage, {
@@ -94,7 +96,7 @@ describe('AccountPage', () => {
       firstName: 'Jane',
       lastName: 'Smith',
       email: 'jane.smith@example.com',
-      preferredLanguage: 'zh_CN'
+      preferredLanguage: 'zh_CN',
     })
 
     const { wrapper, authStore } = createComponent()
@@ -114,7 +116,7 @@ describe('AccountPage', () => {
       firstName: 'Jane',
       lastName: 'Smith',
       preferredLanguage: 'zh_CN',
-      userId: 1
+      userId: 1,
     })
   })
 
@@ -191,7 +193,7 @@ describe('AccountPage', () => {
       firstName: 'John',
       lastName: 'Doe',
       email: 'john.doe@example.com',
-      preferredLanguage: 'zh_CN'
+      preferredLanguage: 'zh_CN',
     })
 
     const { wrapper, authStore } = createComponent()
@@ -209,7 +211,7 @@ describe('AccountPage', () => {
       firstName: 'John',
       lastName: 'Doe',
       preferredLanguage: 'zh_CN',
-      userId: 1
+      userId: 1,
     })
   })
 

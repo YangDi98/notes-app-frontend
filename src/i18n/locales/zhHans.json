@@ -1,0 +1,102 @@
+{
+  "app": {
+    "name": "快记",
+    "disclaimer": "这是一个仅用于学习目的的演示应用程序。请勿使用真实的凭据或敏感信息。"
+  },
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "confirm": "确认",
+    "update": "更新",
+    "user": "用户",
+    "email": "电子邮件",
+    "password": "密码",
+    "confirmPassword": "确认密码",
+    "firstName": "名",
+    "lastName": "姓",
+    "english": "English",
+    "chinese": "中文"
+  },
+  "auth": {
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出登录",
+    "loggingOut": "正在退出...",
+    "signIn": "登录",
+    "dontHaveAccount": "没有账号？",
+    "alreadyHaveAccount": "已有账号？"
+  },
+  "notes": {
+    "myNotes": "我的笔记",
+    "welcome": "欢迎",
+    "dashboardDescription": "这是您的笔记面板。您可以在这里管理所有笔记。",
+    "newNoteTitle": "新笔记标题",
+    "newNoteContent": "新笔记内容",
+    "addNote": "添加笔记",
+    "editNote": "编辑笔记",
+    "title": "标题",
+    "content": "内容"
+  },
+  "account": {
+    "myAccount": "我的账号",
+    "accountDescription": "这是账号页面。您可以在这里查看和编辑您的账号信息。",
+    "accountDetails": "账号详情",
+    "settings": "设置",
+    "preferredLanguage": "首选语言",
+    "name": "姓名：",
+    "emailLabel": "电子邮件：",
+    "updatePassword": "更新密码",
+    "currentPassword": "当前密码",
+    "newPassword": "新密码",
+    "confirmNewPassword": "确认新密码"
+  },
+  "validation": {
+    "titleRequired": "标题不能为空",
+    "contentRequired": "内容不能为空",
+    "emailRequired": "电子邮件不能为空",
+    "emailInvalid": "电子邮件格式无效",
+    "passwordRequired": "密码不能为空",
+    "passwordComplexity": "密码至少需要9个字符，包含大写字母、小写字母、数字和特殊字符 ({'@'}$#%)",
+    "confirmPasswordRequired": "请确认您的密码",
+    "passwordsMustMatch": "密码必须一致",
+    "passwordsDoNotMatch": "密码不一致",
+    "firstNameRequired": "名不能为空",
+    "lastNameRequired": "姓不能为空",
+    "currentPasswordRequired": "当前密码不能为空",
+    "newPasswordRequired": "新密码不能为空"
+  },
+  "notifications": {
+    "registrationSuccess": "注册成功。",
+    "registrationFailed": "注册失败。",
+    "loginSuccess": "登录成功。",
+    "loginFailed": "登录失败。",
+    "logoutFailed": "退出登录失败。",
+    "passwordUpdateSuccess": "密码更新成功。",
+    "passwordIncorrect": "当前密码不正确。",
+    "passwordUpdateFailed": "密码更新失败。",
+    "profileUpdateSuccess": "用户信息更新成功。",
+    "profileUpdateFailed": "用户信息更新失败。",
+    "noteCreatedSuccess": "笔记创建成功！",
+    "noteCreateFailed": "创建笔记失败，请稍后重试。",
+    "noteLoadFailed": "加载笔记失败，请稍后重试。",
+    "noteUpdatedSuccess": "笔记更新成功",
+    "noteUpdateFailed": "更新笔记失败，请稍后重试。",
+    "noteDeletedSuccess": "笔记删除成功",
+    "noteDeleteFailed": "删除笔记失败，请稍后重试。",
+    "failedUpdateProfile": "更新个人资料失败",
+    "failedUpdatePassword": "更新密码失败"
+  },
+  "dialog": {
+    "confirmAction": "确认操作",
+    "areYouSure": "您确定吗？",
+    "confirmDeletion": "确认删除",
+    "deleteNoteConfirm": "您确定要删除这条笔记吗？此操作无法撤销。"
+  },
+  "notFound": {
+    "title": "404 - 页面未找到",
+    "message": "您要查找的页面不存在或已被移动。",
+    "goHome": "返回首页",
+    "goBack": "返回上页"
+  }
+}

@@ -1,11 +1,14 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useNotesStore } from '@/stores/notes'
 import { useNotificationStore } from '@/stores/notification'
 import NoteCard from '@/components/NoteCard.vue'
 import EditNoteModal from '@/components/EditNoteModal.vue'
 import DisclaimerWarning from '@/components/DisclaimerWarning.vue'
+
+const { t } = useI18n()
 const authStore = useAuthStore()
 const notesStore = useNotesStore()
 const notificationStore = useNotificationStore()
@@ -20,8 +23,8 @@ const selectedNote = ref(null)
 const showEditModal = ref(false)
 
 const rules = {
-  title: [(value) => !!(value && value.trim()) || 'Title is required'],
-  content: [(value) => !!(value && value.trim()) || 'Content is required'],
+  title: [(value) => !!(value && value.trim()) || t('validation.titleRequired')],
+  content: [(value) => !!(value && value.trim()) || t('validation.contentRequired')],
 }
 
 const form = ref()
@@ -38,7 +41,7 @@ async function fetchNotes({ done } = { done: () => {} }) {
     }
   } catch {
     notificationStore.setAlertMessage({
-      message: 'Failed to load notes. Please try again later.',
+      message: t('notifications.noteLoadFailed'),
       type: 'error',
     })
     done('error') // Indicate error state
@@ -59,12 +62,12 @@ async function createNote() {
     form.value?.reset()
 
     notificationStore.setAlertMessage({
-      message: 'Note created successfully!',
+      message: t('notifications.noteCreatedSuccess'),
       type: 'success',
     })
   } catch {
     notificationStore.setAlertMessage({
-      message: 'Failed to create note. Please try again later.',
+      message: t('notifications.noteCreateFailed'),
       type: 'error',
     })
   }
@@ -88,8 +91,8 @@ onUnmounted(() => {
   <div>
     <div class="pa-4">
       <DisclaimerWarning />
-      <h1>Welcome, {{ authStore.user?.firstName || 'User' }}!</h1>
-      <p>This is your notes dashboard. Here you can manage all your notes.</p>
+      <h1>{{ $t('notes.welcome') }}, {{ authStore.user?.firstName || $t('common.user') }}!</h1>
+      <p>{{ $t('notes.dashboardDescription') }}</p>
     </div>
     <div class="pa-4">
       <v-card class="pa-4" color="secondary" variant="outlined">
@@ -97,7 +100,7 @@ onUnmounted(() => {
           <v-text-field
             class="my-text-input"
             v-model="newNote.title"
-            label="New Note Title"
+            :label="$t('notes.newNoteTitle')"
             :max-length="100"
             :counter="100"
             :rules="rules.title"
@@ -107,7 +110,7 @@ onUnmounted(() => {
           <v-textarea
             class="my-textarea"
             v-model="newNote.content"
-            label="New Note Content"
+            :label="$t('notes.newNoteContent')"
             clearable
             :rules="rules.content"
             required
@@ -119,7 +122,7 @@ onUnmounted(() => {
               @click="createNote"
               :loading="notesStore.pending.createNote"
               :disabled="!formValid || notesStore.pending.createNote"
-              >Add Note</v-btn
+              >{{ $t('notes.addNote') }}</v-btn
             >
           </div>
         </v-form>

@@ -3,6 +3,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { createRouter, createWebHistory } from 'vue-router'
+import i18n from '@/i18n'
 
 // Mock ResizeObserver for tests
 globalThis.ResizeObserver = class ResizeObserver {
@@ -29,5 +30,8 @@ const vuetify = createVuetify({
   directives,
 })
 
+// Set locale to English for tests
+i18n.global.locale.value = 'en'
+
 // Configure global plugins for all test files
-config.global.plugins = [vuetify, router]
+config.global.plugins = [vuetify, router, i18n]

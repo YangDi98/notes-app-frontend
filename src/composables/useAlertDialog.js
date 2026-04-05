@@ -1,12 +1,15 @@
 import { ref, reactive } from 'vue'
+import i18n from '@/i18n'
+
+const t = i18n.global.t
 
 // Global state for the alert dialog
 const isOpen = ref(false)
 const dialogOptions = reactive({
   title: '',
   message: '',
-  confirmText: 'Confirm',
-  cancelText: 'Cancel',
+  confirmText: t('common.confirm'),
+  cancelText: t('common.cancel'),
   confirmColor: 'primary',
   onConfirm: null,
   onCancel: null,
@@ -14,10 +17,10 @@ const dialogOptions = reactive({
 
 export function useAlertDialog() {
   const showAlert = ({
-    title = 'Confirm Action',
-    message = 'Are you sure?',
-    confirmText = 'Confirm',
-    cancelText = 'Cancel',
+    title = t('dialog.confirmAction'),
+    message = t('dialog.areYouSure'),
+    confirmText = t('common.confirm'),
+    cancelText = t('common.cancel'),
     confirmColor = 'primary',
     onConfirm = () => {},
     onCancel = () => {},

@@ -1,9 +1,11 @@
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import AppLogo from '@/components/AppLogo.vue'
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 const router = useRouter()
 const form = ref({
@@ -11,8 +13,8 @@ const form = ref({
   password: '',
 })
 const rules = {
-  email: [(value) => !!value.trim() || 'Email is required'],
-  password: [(value) => !!value || 'Password is required'],
+  email: [(value) => !!value.trim() || t('validation.emailRequired')],
+  password: [(value) => !!value || t('validation.passwordRequired')],
 }
 
 async function login() {
@@ -36,11 +38,17 @@ async function login() {
   <div class="d-flex flex-column ga-2 justify-center align-center h-100">
     <AppLogo class="mb-4" />
     <v-form class="w-75 w-sm-50 w-md-33" validate-on="blur" @submit.prevent="login">
-      <v-text-field v-model="form.email" label="Email" type="email" :rules="rules.email" required>
+      <v-text-field
+        v-model="form.email"
+        :label="$t('common.email')"
+        type="email"
+        :rules="rules.email"
+        required
+      >
       </v-text-field>
 
       <v-text-field
-        label="Password"
+        :label="$t('common.password')"
         type="password"
         v-model="form.password"
         :rules="rules.password"
@@ -48,10 +56,15 @@ async function login() {
       >
       </v-text-field>
       <div class="d-flex justify-center">
-        <v-btn type="submit" color="primary" :loading="authStore.pending.login">Login</v-btn>
+        <v-btn type="submit" color="primary" :loading="authStore.pending.login">{{
+          $t('auth.login')
+        }}</v-btn>
       </div>
     </v-form>
 
-    <div>Don't have an account? <router-link to="/register">Register</router-link></div>
+    <div>
+      {{ $t('auth.dontHaveAccount') }}
+      <router-link to="/register">{{ $t('auth.register') }}</router-link>
+    </div>
   </div>
 </template>

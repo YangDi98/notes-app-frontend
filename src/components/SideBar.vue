@@ -65,13 +65,13 @@ watch(
         <v-list density="compact" nav v-model:selected="selectedItem" @update:selected="navigate">
           <v-list-item
             :prepend-icon="mdiNoteMultiple"
-            title="My Notes"
+            :title="$t('notes.myNotes')"
             value="notes"
             color="primary"
           />
           <v-list-item
             :prepend-icon="mdiAccountCircle"
-            title="My Account"
+            :title="$t('account.myAccount')"
             value="account"
             color="primary"
           />
@@ -81,7 +81,7 @@ watch(
         <v-list>
           <v-list-item
             :prepend-icon="mdiLogout"
-            :title="authStore.pending.logout ? 'Logging out...' : 'Logout'"
+            :title="authStore.pending.logout ? $t('auth.loggingOut') : $t('auth.logout')"
             base-color="primary"
             variant="tonal"
             :disabled="authStore.pending.logout"
