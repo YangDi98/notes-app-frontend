@@ -1,16 +1,18 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { mdiEye, mdiEyeOff } from '@mdi/js'
 import DisclaimerWarning from '@/components/DisclaimerWarning.vue'
-import isEqual from 'lodash/isEqual';
+import isEqual from 'lodash/isEqual'
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 
-const languageOptions = [
-  { title: 'English', value: 'en_CA'},
-  { title: '中文', value: 'zh_CN'}
-]
+const languageOptions = computed(() => [
+  { title: t('common.english'), value: 'en_CA' },
+  { title: t('common.chinese'), value: 'zh_CN' },
+])
 
 const settingsFormRef = ref(null)
 const settingsForm = ref({
@@ -23,8 +25,8 @@ const settingsFormValid = ref(false)
 const settingsFormError = ref('')
 
 const settingsFormRules = {
-  firstName: [(value) => !!value.trim() || 'First name is required'],
-  lastName: [(value) => !!value.trim() || 'Last name is required'],
+  firstName: [(value) => !!value.trim() || t('validation.firstNameRequired')],
+  lastName: [(value) => !!value.trim() || t('validation.lastNameRequired')],
 }
 
 // Password update form
@@ -44,20 +46,17 @@ const showConfirmPassword = ref(false)
 
 // Password validation rules
 const passwordRules = {
-  current: [(value) => !!value || 'Current password is required'],
+  current: [(value) => !!value || t('validation.currentPasswordRequired')],
   new: [
-    (value) => !!value || 'New password is required',
+    (value) => !!value || t('validation.newPasswordRequired'),
     (value) => {
       const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$#%])[A-Za-z\d@$#%]{9,}$/
-      return (
-        regex.test(value) ||
-        'Password must be at least 9 characters with uppercase, lowercase, digit, and special character (@$#%)'
-      )
+      return regex.test(value) || t('validation.passwordComplexity')
     },
   ],
   confirm: [
-    (value) => !!value || 'Please confirm your password',
-    (value) => value === passwordForm.value.newPassword || 'Passwords do not match',
+    (value) => !!value || t('validation.confirmPasswordRequired'),
+    (value) => value === passwordForm.value.newPassword || t('validation.passwordsDoNotMatch'),
   ],
 }
 
@@ -79,7 +78,7 @@ async function updatePassword() {
 
     passwordFormRef.value?.reset()
   } catch {
-    passwordError.value = 'Failed to update password'
+    passwordError.value = t('notifications.failedUpdatePassword')
   } finally {
     passwordFormValid.value = false
   }
@@ -97,7 +96,7 @@ async function saveSettings() {
     })
     initialSettingsForm.value = { ...settingsForm.value } // Update initial form state
   } catch {
-    settingsFormError.value = 'Failed to update profile'
+    settingsFormError.value = t('notifications.failedUpdateProfile')
   }
 }
 </script>
@@ -106,59 +105,75 @@ async function saveSettings() {
   <div>
     <div class="pa-4">
       <DisclaimerWarning />
-      <h1>My Account</h1>
-      <p>This is the account page. You can view and edit your account details here.</p>
+      <h1>{{ $t('account.myAccount') }}</h1>
+      <p>{{ $t('account.accountDescription') }}</p>
     </div>
     <div class="pa-4">
       <v-card>
-        <v-card-title>Account Details</v-card-title>
+        <v-card-title>{{ $t('account.accountDetails') }}</v-card-title>
         <v-card-text>
           <p>
-            <strong>Name:</strong> {{ authStore.user?.firstName }} {{ authStore.user?.lastName }}
+            <strong>{{ $t('account.name') }}</strong> {{ authStore.user?.firstName }}
+            {{ authStore.user?.lastName }}
           </p>
-          <p><strong>Email:</strong> {{ authStore.user?.email }}</p>
+          <p>
+            <strong>{{ $t('account.emailLabel') }}</strong> {{ authStore.user?.email }}
+          </p>
         </v-card-text>
       </v-card>
     </div>
     <div class="pa-4">
       <v-card>
-        <v-card-title>Settings</v-card-title>
+        <v-card-title>{{ $t('account.settings') }}</v-card-title>
         <v-card-text>
           <v-form ref="settingsFormRef" v-model="settingsFormValid" @submit.prevent="saveSettings">
             <v-text-field
               v-model="settingsForm.firstName"
-              label="First Name"
+              :label="$t('common.firstName')"
               :rules="settingsFormRules.firstName"
               required
             />
             <v-text-field
               v-model="settingsForm.lastName"
-              label="Last Name"
+              :label="$t('common.lastName')"
               :rules="settingsFormRules.lastName"
               required
             />
             <v-select
-            :items="languageOptions"
-            v-model="settingsForm.preferredLanguage"
-            label="Preferred Language"
-          />
-          <v-btn data-test="settings-submit" class="mt-2" color="primary" type="submit" :disabled="!settingsFormValid || isEqual(settingsForm, initialSettingsForm) || authStore.pending.updateProfile"
-          :loading="authStore.pending.updateProfile">
-            Save
-          </v-btn>
+              :items="languageOptions"
+              v-model="settingsForm.preferredLanguage"
+              :label="$t('account.preferredLanguage')"
+            />
+            <v-btn
+              data-test="settings-submit"
+              class="mt-2"
+              color="primary"
+              type="submit"
+              :disabled="
+                !settingsFormValid ||
+                isEqual(settingsForm, initialSettingsForm) ||
+                authStore.pending.updateProfile
+              "
+              :loading="authStore.pending.updateProfile"
+            >
+              {{ $t('common.save') }}
+            </v-btn>
           </v-form>
-
         </v-card-text>
       </v-card>
     </div>
     <div class="pa-4">
       <v-card>
-        <v-card-title>Update Password</v-card-title>
+        <v-card-title>{{ $t('account.updatePassword') }}</v-card-title>
         <v-card-text>
-          <v-form ref="passwordFormRef" v-model="passwordFormValid" @submit.prevent="updatePassword">
+          <v-form
+            ref="passwordFormRef"
+            v-model="passwordFormValid"
+            @submit.prevent="updatePassword"
+          >
             <v-text-field
               v-model="passwordForm.currentPassword"
-              label="Current Password"
+              :label="$t('account.currentPassword')"
               :type="showCurrentPassword ? 'text' : 'password'"
               :append-inner-icon="showCurrentPassword ? mdiEyeOff : mdiEye"
               @click:append-inner="showCurrentPassword = !showCurrentPassword"
@@ -168,7 +183,7 @@ async function saveSettings() {
 
             <v-text-field
               v-model="passwordForm.newPassword"
-              label="New Password"
+              :label="$t('account.newPassword')"
               :type="showNewPassword ? 'text' : 'password'"
               :append-inner-icon="showNewPassword ? mdiEyeOff : mdiEye"
               @click:append-inner="showNewPassword = !showNewPassword"
@@ -178,7 +193,7 @@ async function saveSettings() {
 
             <v-text-field
               v-model="passwordForm.confirmPassword"
-              label="Confirm New Password"
+              :label="$t('account.confirmNewPassword')"
               :type="showConfirmPassword ? 'text' : 'password'"
               :append-inner-icon="showConfirmPassword ? mdiEyeOff : mdiEye"
               @click:append-inner="showConfirmPassword = !showConfirmPassword"
@@ -197,7 +212,7 @@ async function saveSettings() {
               :loading="authStore.pending.updatePassword"
               :disabled="!passwordFormValid || authStore.pending.updatePassword"
             >
-              Update Password
+              {{ $t('account.updatePassword') }}
             </v-btn>
           </v-form>
         </v-card-text>

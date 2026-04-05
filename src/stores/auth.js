@@ -3,6 +3,10 @@ import { ref } from 'vue'
 import * as authAPI from '@/api/api.js'
 import { useNotificationStore } from '@/stores/notification'
 import { useStorage } from '@vueuse/core'
+import { localeMapping } from '@/constants.js'
+import i18n from '@/i18n'
+
+const t = i18n.global.t
 
 export const useAuthStore = defineStore('auth', () => {
   const notificationStore = useNotificationStore()
@@ -22,11 +26,14 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       pending.value.register = true
       await authAPI.register({ firstName, lastName, email, password })
-      notificationStore.setAlertMessage({ message: 'Registration successful.', type: 'success' })
+      notificationStore.setAlertMessage({
+        message: t('notifications.registrationSuccess'),
+        type: 'success',
+      })
       return user.value
     } catch (error) {
       notificationStore.setAlertMessage({
-        message: error.response.data.message || 'Registration failed.',
+        message: error.response.data.message || t('notifications.registrationFailed'),
         type: 'failure',
       })
       throw error
@@ -43,11 +50,14 @@ export const useAuthStore = defineStore('auth', () => {
 
       await fetchCurrentUser()
 
-      notificationStore.setAlertMessage({ message: 'Login successful.', type: 'success' })
+      notificationStore.setAlertMessage({
+        message: t('notifications.loginSuccess'),
+        type: 'success',
+      })
       return user.value
     } catch (error) {
       notificationStore.setAlertMessage({
-        message: error.response?.data?.message || 'Login failed.',
+        message: error.response?.data?.message || t('notifications.loginFailed'),
         type: 'failure',
       })
       throw error
@@ -76,6 +86,7 @@ export const useAuthStore = defineStore('auth', () => {
       pending.value.fetchCurrentUser = true
       const response = await authAPI.fetchCurrentUser()
       user.value = response.data
+      i18n.global.locale.value = localeMapping[user.value.preferredLanguage] || 'en'
       return user.value
     } catch (error) {
       console.log('Failed to fetch current user:', error)
@@ -102,7 +113,7 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (e) {
       console.log(e)
       notificationStore.setAlertMessage({
-        message: 'Logout failed.',
+        message: t('notifications.logoutFailed'),
         type: 'failure',
       })
     } finally {
@@ -119,19 +130,19 @@ export const useAuthStore = defineStore('auth', () => {
       pending.value.updatePassword = true
       await authAPI.updatePassword({ currentPassword, newPassword })
       notificationStore.setAlertMessage({
-        message: 'Password updated successfully.',
+        message: t('notifications.passwordUpdateSuccess'),
         type: 'success',
       })
     } catch (error) {
       if (error.response?.status === 401) {
         notificationStore.setAlertMessage({
-          message: 'Current password is incorrect.',
+          message: t('notifications.passwordIncorrect'),
           type: 'failure',
         })
         return
       }
       notificationStore.setAlertMessage({
-        message: error.response?.data?.message || 'Failed to update password.',
+        message: error.response?.data?.message || t('notifications.passwordUpdateFailed'),
         type: 'failure',
       })
       throw error
@@ -143,15 +154,21 @@ export const useAuthStore = defineStore('auth', () => {
   async function updateProfile({ userId, firstName, lastName, preferredLanguage }) {
     try {
       pending.value.updateProfile = true
-      const response = await authAPI.updateProfile({ userId, firstName, lastName, preferredLanguage })
+      const response = await authAPI.updateProfile({
+        userId,
+        firstName,
+        lastName,
+        preferredLanguage,
+      })
       user.value = response.data
+      i18n.global.locale.value = localeMapping[user.value.preferredLanguage] || 'en'
       notificationStore.setAlertMessage({
-        message: 'User information updated successfully.',
+        message: t('notifications.profileUpdateSuccess'),
         type: 'success',
       })
     } catch (error) {
       notificationStore.setAlertMessage({
-        message: error.response?.data?.message || 'Failed to update user information.',
+        message: error.response?.data?.message || t('notifications.profileUpdateFailed'),
         type: 'failure',
       })
       throw error

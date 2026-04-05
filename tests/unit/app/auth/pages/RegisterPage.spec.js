@@ -56,7 +56,6 @@ describe('RegisterPage', () => {
 
     await flushPromises()
 
-
     expect(notificationStore.setAlertMessage).toHaveBeenCalledWith({
       message: 'Registration successful.',
       type: 'success',
@@ -68,8 +67,8 @@ describe('RegisterPage', () => {
       const { wrapper } = createComponent()
       const rules = wrapper.vm.rules.firstName
 
-      expect(rules[0]('')).toBe('First Name is required')
-      expect(rules[0]('   ')).toBe('First Name is required')
+      expect(rules[0]('')).toBe('First name is required')
+      expect(rules[0]('   ')).toBe('First name is required')
       expect(rules[0]('John')).toBe(true)
     })
 
@@ -77,8 +76,8 @@ describe('RegisterPage', () => {
       const { wrapper } = createComponent()
       const rules = wrapper.vm.rules.lastName
 
-      expect(rules[0]('')).toBe('Last Name is required')
-      expect(rules[0]('   ')).toBe('Last Name is required')
+      expect(rules[0]('')).toBe('Last name is required')
+      expect(rules[0]('   ')).toBe('Last name is required')
       expect(rules[0]('Doe')).toBe(true)
     })
 
@@ -197,7 +196,6 @@ describe('RegisterPage', () => {
 
     // Trigger validation by blurring each field
     //await wrapper.find('[data-testid="firstName-field"] input').trigger('blur')
-
 
     await nextTick()
     await flushPromises() // Wait for any async validation

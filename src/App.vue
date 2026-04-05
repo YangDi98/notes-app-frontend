@@ -1,15 +1,21 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, watchEffect } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import SideBar from '@/components/SideBar.vue'
 import SnackBar from '@/components/SnackBar.vue'
 import AlertDialog from '@/components/AlertDialog.vue'
 import { useRoute } from 'vue-router'
-import { disclaimer } from '@/constants'
 
+const { t } = useI18n()
 const route = useRoute()
 const showSideBar = computed(() => route.meta.showSideBar !== false)
 const authStore = useAuthStore()
+
+// Keep document title in sync with locale
+watchEffect(() => {
+  document.title = t('app.name')
+})
 </script>
 
 <template>
@@ -25,7 +31,7 @@ const authStore = useAuthStore()
       color="warning"
     >
       <div>
-        {{ disclaimer }}
+        {{ $t('app.disclaimer') }}
       </div>
     </v-footer>
 

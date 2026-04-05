@@ -1,9 +1,12 @@
 <script setup>
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useNotesStore } from '@/stores/notes'
 import { mdiClose } from '@mdi/js'
 import { useNotificationStore } from '@/stores/notification'
+
+const { t } = useI18n()
 const props = defineProps({
   note: {
     type: Object,
@@ -36,8 +39,8 @@ const notesStore = useNotesStore()
 const notificationStore = useNotificationStore()
 
 const rules = {
-  title: [(value) => !!(value && value.trim()) || 'Title is required'],
-  content: [(value) => !!(value && value.trim()) || 'Content is required'],
+  title: [(value) => !!(value && value.trim()) || t('validation.titleRequired')],
+  content: [(value) => !!(value && value.trim()) || t('validation.contentRequired')],
 }
 
 async function updateNote() {
@@ -54,12 +57,12 @@ async function save() {
   try {
     await updateNote()
     notificationStore.setAlertMessage({
-      message: 'Note updated successfully',
+      message: t('notifications.noteUpdatedSuccess'),
       type: 'success',
     })
   } catch {
     notificationStore.setAlertMessage({
-      message: 'Failed to update note. Please try again later.',
+      message: t('notifications.noteUpdateFailed'),
       type: 'error',
     })
   }
@@ -78,12 +81,12 @@ async function save() {
       <v-toolbar>
         <v-btn :icon="mdiClose" @click="$emit('update:modelValue', false)"></v-btn>
 
-        <v-toolbar-title>Edit Note</v-toolbar-title>
+        <v-toolbar-title>{{ $t('notes.editNote') }}</v-toolbar-title>
 
         <v-toolbar-items>
           <v-btn
             data-test="save-button"
-            text="Save"
+            :text="$t('common.save')"
             variant="tonal"
             color="primary"
             :loading="notesStore.pending.updateNote"
@@ -96,7 +99,7 @@ async function save() {
         <v-card-text>
           <v-text-field
             v-model="noteForm.title"
-            label="Title"
+            :label="$t('notes.title')"
             :max-length="100"
             :counter="100"
             clearable
@@ -104,7 +107,12 @@ async function save() {
             :rules="rules.title"
           />
 
-          <v-textarea v-model="noteForm.content" label="Content" clearable :rules="rules.content" />
+          <v-textarea
+            v-model="noteForm.content"
+            :label="$t('notes.content')"
+            clearable
+            :rules="rules.content"
+          />
         </v-card-text>
       </v-form>
     </v-card>

@@ -1,10 +1,12 @@
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { mdiEye, mdiEyeOff } from '@mdi/js'
 import AppLogo from '@/components/AppLogo.vue'
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 const router = useRouter()
 
@@ -38,38 +40,32 @@ const showPassword = ref(false)
 const showConfirmPassword = ref(false)
 
 const rules = {
-  firstName: [(value) => !!value.trim() || 'First Name is required'],
-  lastName: [(value) => !!value.trim() || 'Last Name is required'],
+  firstName: [(value) => !!value.trim() || t('validation.firstNameRequired')],
+  lastName: [(value) => !!value.trim() || t('validation.lastNameRequired')],
   email: [
-    (value) => !!value.trim() || 'Email is required',
+    (value) => !!value.trim() || t('validation.emailRequired'),
     (value) => {
       if (/^[a-z0-9.-]+@[a-z0-9.-]+\.[a-z]+$/i.test(value)) {
         return true
       } else {
-        return 'Email must be valid'
+        return t('validation.emailInvalid')
       }
     },
   ],
   password: [
-    (value) => !!value || 'Password is required',
+    (value) => !!value || t('validation.passwordRequired'),
     (value) => {
       const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$#%])[A-Za-z\d@$#%]{9,}$/
-      return (
-        regex.test(value) ||
-        'Password must be at least 9 characters with uppercase, lowercase, digit, and special character (@$#%)'
-      )
+      return regex.test(value) || t('validation.passwordComplexity')
     },
   ],
   confirmPassword: [
-    (value) => !!value || 'Please confirm your password',
+    (value) => !!value || t('validation.confirmPasswordRequired'),
     (value) => {
       const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$#%])[A-Za-z\d@$#%]{9,}$/
-      return (
-        regex.test(value) ||
-        'Password must be at least 9 characters with uppercase, lowercase, digit, and special character (@$#%)'
-      )
+      return regex.test(value) || t('validation.passwordComplexity')
     },
-    (value) => value === form.value.password || 'Passwords must match',
+    (value) => value === form.value.password || t('validation.passwordsMustMatch'),
   ],
 }
 </script>
@@ -86,7 +82,7 @@ const rules = {
     >
       <v-text-field
         v-model="form.firstName"
-        label="First Name"
+        :label="$t('common.firstName')"
         type="text"
         :rules="rules.firstName"
         data-testid="firstName-field"
@@ -95,7 +91,7 @@ const rules = {
       </v-text-field>
       <v-text-field
         v-model="form.lastName"
-        label="Last Name"
+        :label="$t('common.lastName')"
         type="text"
         :rules="rules.lastName"
         data-testid="lastName-field"
@@ -104,7 +100,7 @@ const rules = {
       </v-text-field>
       <v-text-field
         v-model="form.email"
-        label="Email"
+        :label="$t('common.email')"
         type="email"
         :rules="rules.email"
         data-testid="email-field"
@@ -113,7 +109,7 @@ const rules = {
       </v-text-field>
 
       <v-text-field
-        label="Password"
+        :label="$t('common.password')"
         :type="showPassword ? 'text' : 'password'"
         v-model="form.password"
         :rules="rules.password"
@@ -125,7 +121,7 @@ const rules = {
       </v-text-field>
 
       <v-text-field
-        label="Confirm Password"
+        :label="$t('common.confirmPassword')"
         :type="showConfirmPassword ? 'text' : 'password'"
         v-model="form.confirmPassword"
         :rules="rules.confirmPassword"
@@ -143,10 +139,13 @@ const rules = {
           :disabled="!formValid || authStore.pending.register"
           data-testid="register-button"
         >
-          Register
+          {{ $t('auth.register') }}
         </v-btn>
       </div>
     </v-form>
-    <div>Already have an account? <router-link to="/login">Sign in</router-link></div>
+    <div>
+      {{ $t('auth.alreadyHaveAccount') }}
+      <router-link to="/login">{{ $t('auth.signIn') }}</router-link>
+    </div>
   </div>
 </template>
