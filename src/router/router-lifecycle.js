@@ -85,4 +85,13 @@ export function setupRouterGuards(router) {
     // If user has token, allow access to protected routes
     next()
   })
+
+  router.afterEach((to) => {
+    // Update document title based on route meta
+    if (to.meta?.title) {
+      document.title = to.meta.title
+    } else {
+      document.title = 'QuickMemo' // Default title
+    }
+  })
 }

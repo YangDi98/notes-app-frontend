@@ -79,7 +79,11 @@ async function save() {
   >
     <v-card>
       <v-toolbar>
-        <v-btn :icon="mdiClose" @click="$emit('update:modelValue', false)"></v-btn>
+        <v-btn
+          :icon="mdiClose"
+          aria-label="Close"
+          @click="$emit('update:modelValue', false)"
+        ></v-btn>
 
         <v-toolbar-title>{{ $t('notes.editNote') }}</v-toolbar-title>
 

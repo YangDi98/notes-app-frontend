@@ -23,7 +23,7 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 node version: "^20.19.0 || >=22.12.0"
 
 ```sh
-nvm use
+nvm use 22.12.0
 npm install
 ```
 

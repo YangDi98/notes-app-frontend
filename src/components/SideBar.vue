@@ -80,6 +80,7 @@ watch(
       <div class="mb-4">
         <v-list>
           <v-list-item
+            tag="button"
             :prepend-icon="mdiLogout"
             :title="authStore.pending.logout ? $t('auth.loggingOut') : $t('auth.logout')"
             base-color="primary"

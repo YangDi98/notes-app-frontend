@@ -6,7 +6,7 @@ const appRoutes = [
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('@/pages/NotFound.vue'),
-    meta: { requiresAuth: true, showSideBar: false },
+    meta: { requiresAuth: true, showSideBar: false, title: 'Not Found' },
   },
 ]
 
