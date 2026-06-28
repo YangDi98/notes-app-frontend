@@ -20,6 +20,7 @@ vi.mock('@vueuse/core',  async () => {
 // Mock vue-router to prevent history access issues
 const mockRouter = vi.hoisted(() => ({
   beforeEach: vi.fn(),
+  afterEach: vi.fn(),
   push: vi.fn().mockResolvedValue(undefined),
   replace: vi.fn().mockResolvedValue(undefined),
   currentRoute: { value: { name: 'home', fullPath: '/' } },
