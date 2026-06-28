@@ -141,4 +141,3 @@ describe('NotesPage', () => {
     expect(finalNoteCards[0].props('note').title).toBe(newNote.title)
   })
 })
-

@@ -4,18 +4,19 @@ const authRoutes = [
     path: '/register',
     name: 'register',
     component: () => import('@/app/auth/pages/RegisterPage.vue'),
-    meta: { requiresAuth: false, showSideBar: false },
+    meta: { requiresAuth: false, showSideBar: false, title: 'Register' },
   },
 
   {
     path: '/login',
     name: 'login',
     component: () => import('@/app/auth/pages/LoginPage.vue'),
-    meta: { requiresAuth: false, showSideBar: false },
+    meta: { requiresAuth: false, showSideBar: false, title: 'Login' },
   },
   {
     path: '/logout',
     name: 'logout',
+    meta: { requiresAuth: false, showSideBar: false, title: 'Logout' },
     beforeEnter: async (to, from, next) => {
       const authStore = useAuthStore()
       await authStore.logout()

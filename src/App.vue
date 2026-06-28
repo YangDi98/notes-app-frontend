@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watchEffect } from 'vue'
+import { computed, watchEffect, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import SideBar from '@/components/SideBar.vue'
@@ -7,7 +7,7 @@ import SnackBar from '@/components/SnackBar.vue'
 import AlertDialog from '@/components/AlertDialog.vue'
 import { useRoute } from 'vue-router'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 const showSideBar = computed(() => route.meta.showSideBar !== false)
 const authStore = useAuthStore()
@@ -16,6 +16,15 @@ const authStore = useAuthStore()
 watchEffect(() => {
   document.title = t('app.name')
 })
+
+// Watch the locale ref and update the DOM element attribute
+watch(
+  locale,
+  (newLocale) => {
+    document.documentElement.lang = newLocale
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
