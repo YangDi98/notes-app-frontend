@@ -86,7 +86,7 @@ export function setupRouterGuards(router) {
     next()
   })
 
-  router.afterEach((to, from) => {
+  router.afterEach((to) => {
     // Update document title based on route meta
     if (to.meta?.title) {
       document.title = to.meta.title
