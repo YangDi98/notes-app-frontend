@@ -426,6 +426,29 @@ query: {redirect: '/notes'}
         })
       })
 
+      describe('afterEach title guard', () => {
+        let titleGuard
+
+        beforeEach(() => {
+          titleGuard = router.afterEach.mock.calls[0][0]
+        })
+
+        it('should set document.title from meta.title when present', () => {
+          titleGuard({ meta: { title: 'Notes' } })
+          expect(document.title).toBe('Notes')
+        })
+
+        it('should fall back to QuickMemo when meta.title is absent', () => {
+          titleGuard({ meta: {} })
+          expect(document.title).toBe('QuickMemo')
+        })
+
+        it('should fall back to QuickMemo when meta is undefined', () => {
+          titleGuard({})
+          expect(document.title).toBe('QuickMemo')
+        })
+      })
+
       describe('useStorage integration', () => {
         it('should call useStorage with correct parameters', async () => {
           const to = { name: 'notes', meta: {} }
