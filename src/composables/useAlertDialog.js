@@ -1,10 +1,11 @@
-import { ref, reactive } from 'vue'
+import { ref, reactive, nextTick } from 'vue'
 import i18n from '@/i18n'
 
 const t = i18n.global.t
 
 // Global state for the alert dialog
 const isOpen = ref(false)
+const triggerEl = ref(null)
 const dialogOptions = reactive({
   title: '',
   message: '',
@@ -32,11 +33,16 @@ export function useAlertDialog() {
     dialogOptions.confirmColor = confirmColor
     dialogOptions.onConfirm = onConfirm
     dialogOptions.onCancel = onCancel
+    triggerEl.value = document.activeElement
     isOpen.value = true
   }
 
   const hideAlert = () => {
     isOpen.value = false
+    nextTick(() => {
+      triggerEl.value?.focus()
+      triggerEl.value = null
+    })
   }
 
   const handleConfirm = () => {
