@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import { useNotesStore } from '@/stores/notes'
@@ -21,6 +21,7 @@ const newNote = ref({
 const formValid = ref(false)
 const selectedNote = ref(null)
 const showEditModal = ref(false)
+const editTriggerEl = ref(null)
 
 const rules = {
   title: [(value) => !!(value && value.trim()) || t('validation.titleRequired')],
@@ -74,9 +75,19 @@ async function createNote() {
 }
 
 function editNote(note) {
+  editTriggerEl.value = document.activeElement
   selectedNote.value = note
   showEditModal.value = true
 }
+
+watch(showEditModal, (isOpen) => {
+  if (!isOpen && editTriggerEl.value) {
+    nextTick(() => {
+      editTriggerEl.value?.focus()
+      editTriggerEl.value = null
+    })
+  }
+})
 
 onMounted(() => {
   notesStore.clearNotes()

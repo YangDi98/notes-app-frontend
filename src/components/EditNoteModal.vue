@@ -75,17 +75,18 @@ async function save() {
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
     transition="dialog-bottom-transition"
+    aria-labelledby="edit-note-modal-title"
     fullscreen
   >
     <v-card>
-      <v-toolbar>
+      <v-toolbar tag="div">
         <v-btn
           :icon="mdiClose"
           aria-label="Close"
           @click="$emit('update:modelValue', false)"
         ></v-btn>
 
-        <v-toolbar-title>{{ $t('notes.editNote') }}</v-toolbar-title>
+        <v-toolbar-title id="edit-note-modal-title" tag="h2">{{ $t('notes.editNote') }}</v-toolbar-title>
 
         <v-toolbar-items>
           <v-btn
