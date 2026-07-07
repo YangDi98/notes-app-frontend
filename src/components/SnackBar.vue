@@ -24,6 +24,6 @@ watch(show, (newShow) => {
 
 <template>
   <v-snackbar v-model="show" timeout="3000" location="top" :color="notificationStore.alertType">
-    {{ notificationStore.alertMessage }}
+    <div role="alert" aria-live="assertive">{{ notificationStore.alertMessage }}</div>
   </v-snackbar>
 </template>
