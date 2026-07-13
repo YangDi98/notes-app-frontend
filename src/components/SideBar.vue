@@ -44,6 +44,7 @@ watch(
     permanent
     :rail="$vuetify.display.mobile"
     :expand-on-hover="$vuetify.display.mobile"
+    role="navigation"
   >
     <div class="d-flex flex-column fill-height justify-space-between">
       <div>
