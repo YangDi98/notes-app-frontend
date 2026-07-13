@@ -107,7 +107,7 @@ onUnmounted(() => {
     </div>
     <div class="pa-4">
       <v-card class="pa-4" color="secondary" variant="outlined">
-        <v-form ref="form" v-model="formValid" validate-on="input" @submit.prevent="createNote">
+        <v-form ref="form" v-model="formValid" validate-on="input lazy" @submit.prevent="createNote">
           <v-text-field
             class="my-text-input"
             v-model="newNote.title"
@@ -117,6 +117,7 @@ onUnmounted(() => {
             :rules="rules.title"
             clearable
             required
+            hide-details="auto"
           />
           <v-textarea
             class="my-textarea"
@@ -155,11 +156,21 @@ onUnmounted(() => {
   </div>
 </template>
 
-<style>
+<style scoped>
+
 .my-text-input input {
   color: black !important;
 }
 .my-textarea textarea {
   color: black !important;
+}
+/* By default, hide the details box container from screen readers entirely */
+:deep(.v-input:not(.v-input--error) .v-input__details) {
+  visibility: hidden;
+}
+
+/* Reactively reveal the wrapper for NVDA the exact millisecond an error lands */
+:deep(.v-input.v-input--error .v-input__details) {
+  visibility: visible;
 }
 </style>
