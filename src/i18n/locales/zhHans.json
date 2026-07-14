@@ -2,6 +2,7 @@
   "app": {
     "name": "快记",
     "skipToMain": "跳转到主要内容",
+    "navigatedTo": "已导航至 {page}",
     "disclaimer": "这是一个仅用于学习目的的演示应用程序。请勿使用真实的凭据或敏感信息。"
   },
   "common": {

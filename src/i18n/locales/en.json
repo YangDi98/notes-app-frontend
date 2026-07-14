@@ -2,6 +2,7 @@
   "app": {
     "name": "QuickMemo",
     "skipToMain": "Skip to main content",
+    "navigatedTo": "Navigated to {page}",
     "disclaimer": "This is a demo application created for learning purposes only. Do not use real credentials or sensitive information."
   },
   "common": {
