@@ -12,15 +12,21 @@ const route = useRoute()
 const showSideBar = computed(() => route.meta.showSideBar !== false)
 const authStore = useAuthStore()
 const focusSentinelRef = ref(null)
+const routeAnnouncement = ref('')
 
 // After every SPA route change, reset focus to the invisible sentinel that sits
 // just before the skip link. This keeps the tab order: skip link → nav → main
 // content, without making the skip link appear for non-keyboard users.
+// Also announce the new page name to screen readers via the aria-live region.
 watch(
   () => route.path,
   async () => {
     await nextTick()
     focusSentinelRef.value?.focus({ preventScroll: true })
+    routeAnnouncement.value = ''
+    await nextTick()
+    const pageTitle = route.meta.title
+    routeAnnouncement.value = pageTitle ? t('app.navigatedTo', { page: pageTitle }) : t('app.name')
   },
 )
 
@@ -43,6 +49,7 @@ watch(
 <template>
   <v-app>
     <span ref="focusSentinelRef" tabindex="-1" aria-hidden="true" class="focus-sentinel" />
+    <div aria-live="polite" aria-atomic="true" class="sr-only">{{ routeAnnouncement }}</div>
     <a href="#main-content" class="skip-link">{{ $t('app.skipToMain') }}</a>
     <SideBar v-if="showSideBar && authStore.user" />
     <v-main id="main-content" tabindex="-1">
@@ -94,5 +101,17 @@ watch(
   height: 0;
   overflow: hidden;
   outline: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 </style>
